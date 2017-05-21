@@ -7,42 +7,33 @@ const model = {
 };
 
 const labels = {
-    start: 'Start geth',
-    trying_to_start: 'Trying to start geth process',
-    stop: 'Stop geth'
+    not_started: 'Start geth',
+    starting: 'Trying to start geth process',
+    ready: 'Stop geth'
 };
 
 let view;
 let geth_process;
 let button_action;
 
+const update_status = (from, to) => {
+    model.status = to;
+    from && view.classList.remove(from);
+    view.classList.add(to);
+    dom_js.empty_element(button_action);
+    dom_js.append_child(button_action, labels[to]);
+};
+
 const on_data_from_geth = data => {
-    if (data.indexOf('HTTP endpoint opened: http://localhost:8545') > -1) {
-        model.status = 'ready';
-        view.classList.remove('starting');
-        view.classList.add(model.status);
-        dom_js.empty_element(button_action);
-        dom_js.append_child(button_action, labels.stop);
-    }
+    if (data.indexOf('HTTP endpoint opened: http://localhost:8545') > -1) update_status('starting', 'ready');
 };
 
 const on_close_of_geth = (code, signal) => {
-    if (signal === 'SIGTERM') {
-        model.status = 'not_started';
-        view.classList.remove('ready');
-        view.classList.add(model.status);
-        dom_js.empty_element(button_action);
-        dom_js.append_child(button_action, labels.start);
-    }
+    if (signal === 'SIGTERM') update_status('ready', 'not_started');
 };
 
 const start = () => {
-    model.status = 'starting';
-    view.classList.remove('not_started');
-    view.classList.add(model.status);
-    dom_js.empty_element(button_action);
-    dom_js.append_child(button_action, labels.trying_to_start);
-
+    update_status('not_started', 'starting');9
     // now do it
     let geth_path = setup.get_setup().geth;
     geth_process = child_process.exec(`${geth_path} --rpc --light --fast`);
@@ -57,13 +48,14 @@ const button_action_click = () => {
 };
 
 const render = () => {
-    button_action = dom_js.create_element('button.button', null, [labels.start]);
+    button_action = dom_js.create_element('button.button');
     view = dom_js.create_element(
         `div.geth_status ${model.status}`,
         null,
         [button_action],
         {click: button_action_click}
     );
+    update_status(null, 'not_started');
     return view;
 };
 
