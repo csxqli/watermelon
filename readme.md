@@ -1,6 +1,14 @@
 ```
 ## run geth
-/usr/local/bin/geth --rpc --rpcaddr "127.0.0.1" --rpcport "8545" --rpcapi "/usr/local/bin/geth"
+/usr/local/bin/geth --rpc
+
+# https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options
+# API AND CONSOLE OPTIONS:
+#  --rpc                  Enable the HTTP-RPC server
+#  --rpcaddr value        HTTP-RPC server listening interface (default: "localhost")
+#  --rpcport value        HTTP-RPC server listening port (default: 8545)
+#  --rpcapi value         API's offered over the HTTP-RPC interface (default: "eth,net,web3")
+
 
 ## ---------
 
