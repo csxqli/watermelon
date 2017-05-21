@@ -10,12 +10,14 @@ const labels = {
     path_to_geth: 'Path to geth'
 };
 
+const get_setup = () => JSON.parse(fs.readFileSync(path));
+
 const invalid = () => {
     let invalid = false;
     const setup_file_does_not_exist = !fs.existsSync(path);
     if (setup_file_does_not_exist) invalid = true;
     else {
-        const setup = JSON.parse(fs.readFileSync(path));
+        const setup = get_setup();
         const geth_path_does_not_exist = !setup.geth || setup.geth.length === 0;
         const geth_does_not_exist = !geth_path_does_not_exist && !fs.existsSync(setup.geth);
         const geth_path_is_a_dir = !geth_does_not_exist && fs.statSync(setup.geth).isDirectory();
@@ -28,7 +30,7 @@ const invalid = () => {
 
 const render = () => {
     let setup = {};
-    if (fs.existsSync(path)) setup = JSON.parse(fs.readFileSync(path));
+    if (fs.existsSync(path)) setup = get_setup();
     const title = dom_js.create_element('h1.title', null, [labels.title]);
     const button_save = dom_js.create_element(
         'button.button',
@@ -59,4 +61,4 @@ const render = () => {
     dom_js.append_child(root, view);
 };
 
-module.exports = {invalid, render};
+module.exports = {invalid, render, get_setup};

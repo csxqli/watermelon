@@ -7,6 +7,7 @@
     font-weight: normal;
     outline: none;
     cursor: default;
+    border-radius: 2px;
 }
 
 body {
@@ -25,10 +26,51 @@ body {
 .setup {
 }
 
-.setup .input,
-.setup .button {
-    display: block;
+.input, .button {
+    display: inline-block;
     font-size: 24px;
     padding: 12px;
     margin: 12px 0;
+    border: none;
+}
+
+.button {
+    cursor: pointer;
+}
+
+.button[disabled=true] {
+    cursor: not-allowed;
+}
+
+.overview {}
+
+.geth_status {
+    display: block;
+    text-align: right;
+    padding: 12px 24px;
+    min-height: 104px;
+}
+
+.geth_status.not_started {
+    background: rgba(186, 55, 54, 0.64);
+}
+
+.geth_status.not_started .button {
+    background: rgba(167, 52, 51, 0.73);
+}
+
+.geth_status.starting {
+    background: rgba(186, 134, 18, 0.58);
+}
+
+.geth_status.starting .button {
+    background: rgba(161, 115, 15, 0.67);
+}
+
+.geth_status.ready {
+    background: rgba(41, 186, 12, 0.58);
+}
+
+.geth_status.ready .button {
+    background: rgba(38, 156, 12, 0.67);
 }
