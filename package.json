@@ -1,0 +1,11 @@
+{
+  "name": "watermelon",
+  "version": "1.0.0",
+  "description": "watermelon has many seeds",
+  "main": "index.js",
+  "author": "Sri <srirangan@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "solc": "0.4.11"
+  }
+}
