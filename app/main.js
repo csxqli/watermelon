@@ -1,5 +1,4 @@
 require('../app/controller');
+const events = require('../app/events');
 
-window.onload = () => {
-    document.dispatchEvent(new CustomEvent('start'));
-};
+window.onload = () => events.trigger(events.create('start'));
