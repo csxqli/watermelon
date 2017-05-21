@@ -46,9 +46,17 @@ body {
 
 .geth_status {
     display: block;
-    text-align: right;
     padding: 12px 24px;
     min-height: 104px;
+}
+
+.geth_status .button {
+    width: 120px;
+}
+
+.geth_status .text {
+    width: 100%;
+    margin: 0 0 0 24px;
 }
 
 .geth_status.not_started {
@@ -60,11 +68,11 @@ body {
 }
 
 .geth_status.starting {
-    background: rgba(186, 134, 18, 0.58);
+    background: #999;
 }
 
 .geth_status.starting .button {
-    background: rgba(161, 115, 15, 0.67);
+    background: #666;
 }
 
 .geth_status.ready {

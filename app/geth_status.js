@@ -7,21 +7,27 @@ const model = {
 };
 
 const labels = {
-    not_started: 'Start geth',
-    starting: 'Trying to start geth process',
-    ready: 'Stop geth'
+    button_not_started: 'Start',
+    button_starting: '...',
+    button_ready: 'Stop',
+    text_not_started: 'geth is not running',
+    text_starting: 'trying to start geth',
+    text_ready: 'geth is running'
 };
 
 let view;
 let geth_process;
 let button_action;
+let text_status;
 
 const update_status = (from, to) => {
     model.status = to;
     from && view.classList.remove(from);
     view.classList.add(to);
+    dom_js.empty_element(text_status);
+    dom_js.append_child(text_status, labels[`text_${to}`]);
     dom_js.empty_element(button_action);
-    dom_js.append_child(button_action, labels[to]);
+    dom_js.append_child(button_action, labels[`button_${to}`]);
 };
 
 const on_data_from_geth = data => {
@@ -33,7 +39,7 @@ const on_close_of_geth = (code, signal) => {
 };
 
 const start = () => {
-    update_status('not_started', 'starting');9
+    update_status('not_started', 'starting');
     // now do it
     let geth_path = setup.get_setup().geth;
     geth_process = child_process.exec(`${geth_path} --rpc --light --fast`);
@@ -49,10 +55,11 @@ const button_action_click = () => {
 
 const render = () => {
     button_action = dom_js.create_element('button.button');
+    text_status = dom_js.create_element('span.text');
     view = dom_js.create_element(
         `div.geth_status ${model.status}`,
         null,
-        [button_action],
+        [button_action, text_status],
         {click: button_action_click}
     );
     update_status(null, 'not_started');
