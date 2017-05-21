@@ -5,3 +5,6 @@ node_modules
 ## idea
 .idea
 *.iml
+
+## watermelon
+data/setup.json
