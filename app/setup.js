@@ -17,9 +17,11 @@ const invalid = () => {
     else {
         const setup = JSON.parse(fs.readFileSync(path));
         const geth_path_does_not_exist = !setup.geth || setup.geth.length === 0;
-        const geth_does_not_exist = fs.existsSync(geth_path_does_not_exist);
+        const geth_does_not_exist = !geth_path_does_not_exist && !fs.existsSync(setup.geth);
+        const geth_path_is_a_dir = !geth_does_not_exist && fs.statSync(setup.geth).isDirectory();
         if (geth_path_does_not_exist) invalid = true;
-        if (geth_does_not_exist) invalid = true;
+        else if (geth_path_is_a_dir) invalid = true;
+        else if (geth_does_not_exist) invalid = true;
     }
     return invalid;
 };
@@ -35,8 +37,8 @@ const render = () => {
     );
     const verify_path = path => {
         const does_not_exist = !fs.existsSync(path);
-        const is_a_directory = !does_not_exist && fs.statSync(path).isDirectory();
-        button_save.disabled = does_not_exist || is_a_directory;
+        const is_a_dir = !does_not_exist && fs.statSync(path).isDirectory();
+        button_save.disabled = does_not_exist || is_a_dir;
     };
     const input_geth_path = dom_js.create_element(
         'input.input',
