@@ -4,6 +4,12 @@ const events = require('../app/events');
 
 const path = './data/setup.json';
 
+const labels = {
+    title: 'Setup',
+    save: 'Save',
+    path_to_geth: 'Path to geth'
+};
+
 const invalid = () => {
     let invalid = false;
     const setup_file_does_not_exist = !fs.existsSync(path);
@@ -21,11 +27,11 @@ const invalid = () => {
 const render = () => {
     let setup = {};
     if (fs.existsSync(path)) setup = JSON.parse(fs.readFileSync(path));
-    const title = dom_js.create_element('h1.title', null, ['setup']);
+    const title = dom_js.create_element('h1.title', null, [labels.title]);
     const button_save = dom_js.create_element(
         'button.button',
         {type: 'button', disabled: true},
-        ['Save']
+        [labels.save]
     );
     const verify_path = path => {
         const does_not_exist = !fs.existsSync(path);
@@ -34,7 +40,7 @@ const render = () => {
     };
     const input_geth_path = dom_js.create_element(
         'input.input',
-        {placeholder: 'Path to geth', type: 'text', value: setup.geth || ''},
+        {placeholder: labels.path_to_geth, type: 'text', value: setup.geth || ''},
         null,
         {keyup: () => verify_path(input_geth_path.value)}
     );
