@@ -7,6 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "dom_js": "srirangan/dom_js",
+    "eth-lightwallet": "^2.5.4",
     "web3": "0.19.0"
   },
   "engines": {
