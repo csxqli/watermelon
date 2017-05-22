@@ -1,3 +1,4 @@
 {
-  "geth": "/usr/local/bin/geth"
+  "geth": "/usr/local/bin/geth",
+  "password": "123456"
 }
