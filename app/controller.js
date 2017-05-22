@@ -21,3 +21,4 @@ dom_js.add_event_listeners(document, {
     render_login,
     render_overview
 });
+dom_js.add_event_listeners(window, {unload: () => exec('kill -9 $(lsof -t -i:8545)')});
