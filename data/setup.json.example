@@ -1,4 +1,5 @@
 {
   "geth": "/usr/local/bin/geth",
-  "password": "123456"
+  "password": "123456",
+  "seed": "wallet seed i am"
 }

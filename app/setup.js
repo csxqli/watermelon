@@ -1,4 +1,5 @@
 const fs = require('fs');
+const lightwallet = require('eth-lightwallet');
 const dom_js = require('dom_js');
 const events = require('../app/events');
 
@@ -9,7 +10,9 @@ const labels = {
     save: 'Save',
     path_to_geth: 'Path to geth',
     password: 'Password',
-    password_confirm: 'Confirm password'
+    password_confirm: 'Confirm password',
+    seed: 'Wallet seed',
+    seed_text: 'Generated wallet seed (keep it safe)',
 };
 
 const get_setup = () => JSON.parse(fs.readFileSync(path));
@@ -48,12 +51,17 @@ const render = () => {
     let input_geth_path;
     let input_password;
     let input_password_confirm;
+    let text_seed;
+    let input_seed;
     const password_is_invalid = () => {
         const password = input_password.value;
         const confirm = input_password_confirm.value;
         return password.length === 0 || password !== confirm;
     };
     const verify = event => {
+        if (!password_is_invalid()) {
+            input_seed.value = lightwallet.keystore.generateRandomSeed(input_password.value);
+        }
         button.disabled = geth_path_is_invalid(input_geth_path.value) || password_is_invalid();
         if (!button.disabled && event.keyCode === dom_js.key_codes.enter) button.click();
     };
@@ -75,10 +83,18 @@ const render = () => {
         null,
         {keyup: verify}
     );
+    text_seed = dom_js.create_element('div.text', null, [labels.seed_text]);
+    input_seed = dom_js.create_element(
+        'input.input seed',
+        {placeholder: labels.seed, type: 'text', readonly: true},
+        null,
+        {keyup: verify}
+    );
     const save = () => {
         const data = {
             geth: input_geth_path.value,
             password: input_password.value,
+            seed: input_seed.value,
         };
         fs.writeFileSync(path, JSON.stringify(data, null, 2));
         dom_js.empty_element(root);
@@ -90,6 +106,8 @@ const render = () => {
         input_geth_path,
         input_password,
         input_password_confirm,
+        text_seed,
+        input_seed,
         button
     ]);
     const root = document.querySelector('#root');
