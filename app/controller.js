@@ -12,4 +12,8 @@ const render_setup = () => setup.render();
 
 const render_overview = () => overview.render();
 
-dom_js.add_event_listeners(document, {start, render_setup, render_overview});
+dom_js.add_event_listeners(document, {
+    start,
+    render_setup,
+    render_overview
+});

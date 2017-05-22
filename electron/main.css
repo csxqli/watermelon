@@ -27,7 +27,7 @@ body {
 }
 
 .input, .button {
-    display: inline-block;
+    display: block;
     font-size: 24px;
     padding: 12px;
     margin: 12px 0;
@@ -35,6 +35,7 @@ body {
 }
 
 .button {
+    display: inline-block;
     cursor: pointer;
 }
 
