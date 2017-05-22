@@ -4,8 +4,8 @@ const setup = require('../app/setup');
 const overview = require('./overview');
 
 const start = () => {
-    if (setup.invalid()) events.trigger(events.create('render_setup'));
-    else events.trigger(events.create('render_overview'));
+    if (setup.invalid()) events.trigger('render_setup');
+    else events.trigger('render_overview');
 };
 
 const render_setup = () => setup.render();

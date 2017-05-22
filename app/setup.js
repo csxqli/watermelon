@@ -81,7 +81,7 @@ const render = () => {
         };
         fs.writeFileSync(path, JSON.stringify(data, null, 2));
         dom_js.empty_element(root);
-        events.trigger(events.create('start'));
+        events.trigger('start');
     };
     dom_js.add_event_listeners(button_save, {click: save});
     const view = dom_js.create_element('div.setup', null, [
