@@ -1,5 +1,6 @@
 const path = require('path');
 const url = require('url');
+const exec = require('child_process').exec;
 const electron = require('electron');
 
 const main = () => {
@@ -14,4 +15,5 @@ const main = () => {
 
 electron.app.on('ready', main);
 
-electron.app.on('window-all-closed', () => electron.app.quit());
+electron.app.on('window-all-closed', () => exec('kill -9 $(lsof -t -i:8545)', () => electron.app.quit()));
+
