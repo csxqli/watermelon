@@ -1,9 +1,10 @@
 const child_process = require('child_process');
 const dom_js = require('dom_js');
+const events = require('../app/events');
 const setup = require('../app/setup');
 
 const model = {
-    status: 'not_started'
+    status: 'not_started' // not_started | starting | ready
 };
 
 const labels = {
@@ -28,6 +29,7 @@ const update_status = (from, to) => {
     dom_js.append_child(text_status, labels[`text_${to}`]);
     dom_js.empty_element(button_action);
     dom_js.append_child(button_action, labels[`button_${to}`]);
+    if (to === 'ready') events.trigger(events.create('get_accounts'));
 };
 
 const on_data_from_geth = data => {
