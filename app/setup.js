@@ -40,7 +40,7 @@ const render = () => {
     let setup = {};
     if (fs.existsSync(path)) setup = get_setup();
     const title = dom_js.create_element('h1.title', null, [labels.title]);
-    const button_save = dom_js.create_element(
+    const button = dom_js.create_element(
         'button.button',
         {type: 'button', disabled: true},
         [labels.save]
@@ -53,8 +53,9 @@ const render = () => {
         const confirm = input_password_confirm.value;
         return password.length === 0 || password !== confirm;
     };
-    const verify = () => {
-        button_save.disabled = geth_path_is_invalid(input_geth_path.value) || password_is_invalid();
+    const verify = event => {
+        button.disabled = geth_path_is_invalid(input_geth_path.value) || password_is_invalid();
+        if (!button.disabled && event.keyCode === dom_js.key_codes.enter) button.click();
     };
     input_geth_path = dom_js.create_element(
         'input.input',
@@ -83,13 +84,14 @@ const render = () => {
         dom_js.empty_element(root);
         events.trigger('start');
     };
-    dom_js.add_event_listeners(button_save, {click: save});
+    dom_js.add_event_listeners(button, {click: save});
     const view = dom_js.create_element('div.setup', null, [
         title,
         input_geth_path,
         input_password,
         input_password_confirm,
-        button_save]);
+        button
+    ]);
     const root = document.querySelector('#root');
     dom_js.empty_element(root);
     dom_js.append_child(root, view);
