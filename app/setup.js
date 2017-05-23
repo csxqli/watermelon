@@ -97,7 +97,8 @@ const render = () => {
                 geth: input_geth_path.value,
                 password: input_password.value,
                 seed: get_setup().seed || input_seed.value,
-                keystore: get_setup().keystore || keystore.serialize()
+                keystore: get_setup().keystore || keystore.serialize(),
+                accounts: get_setup().accounts || {},
             };
             fs.writeFileSync(path, JSON.stringify(data, null, 2));
             dom_js.empty_element(root);
