@@ -1,3 +1,4 @@
+const exec = require('child_process').exec;
 const dom_js = require('dom_js');
 const events = require('../app/events');
 const setup = require('../app/setup');
