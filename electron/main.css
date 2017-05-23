@@ -90,3 +90,29 @@ body {
 .create_account_form .button {
     display: inline-block;
 }
+
+.accounts_list {
+    margin-top: 24px
+}
+
+.accounts_list .account_item {
+    display: inline-block;
+    padding: 12px;
+    margin: 0 12px 12px 0;
+    box-shadow: #999 0 0 6px;
+    /*width: 210px;*/
+    cursor: pointer;
+}
+
+.accounts_list .account_item:hover {
+    background: #ddd;
+}
+
+.accounts_list .account_item .name {
+    cursor: pointer;
+}
+
+.accounts_list .account_item .address {
+    cursor: pointer;
+    font-size: 10px;
+}
