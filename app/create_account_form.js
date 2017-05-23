@@ -1,5 +1,6 @@
 const lightwallet = require('eth-lightwallet');
 const dom_js = require('dom_js');
+const events = require('../app/events');
 const setup = require('../app/setup');
 
 const labels = {
@@ -34,10 +35,16 @@ const create_account_form = () => {
                 dom_js.remove_element(input_name);
                 dom_js.remove_element(button_save);
                 dom_js.append_child(view, button_create);
+                events.trigger('render_overview');
             });
         }
     };
-    input_name = dom_js.create_element('input.input', {type: 'text', placeholder: labels.account_name});
+    input_name = dom_js.create_element(
+        'input.input',
+        {type: 'text', placeholder: labels.account_name},
+        null,
+        {keyup: event => event.keyCode === dom_js.key_codes.enter && save_account()}
+    );
     button_save = dom_js.create_element(
         'button.button',
         {type: 'button'},
