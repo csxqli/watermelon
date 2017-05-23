@@ -34,7 +34,7 @@ const invalid = () => {
     if (setup_file_does_not_exist) invalid = true;
     else {
         const setup = get_setup();
-        invalid = geth_path_is_invalid(setup.geth) || !setup.password;
+        invalid = geth_path_is_invalid(setup.geth) || !setup.password || !setup.seed || !setup.keystore;
     }
     return invalid;
 };
@@ -91,14 +91,18 @@ const render = () => {
         {keyup: verify}
     );
     const save = () => {
-        const data = {
-            geth: input_geth_path.value,
-            password: input_password.value,
-            seed: input_seed.value,
-        };
-        fs.writeFileSync(path, JSON.stringify(data, null, 2));
-        dom_js.empty_element(root);
-        events.trigger('start');
+        lightwallet.keystore.deriveKeyFromPassword(input_password.value, (err, derived_key) => {
+            const keystore = new lightwallet.keystore(input_seed.value, derived_key);
+            const data = {
+                geth: input_geth_path.value,
+                password: input_password.value,
+                seed: input_seed.value,
+                keystore: keystore.serialize()
+            };
+            fs.writeFileSync(path, JSON.stringify(data, null, 2));
+            dom_js.empty_element(root);
+            events.trigger('start');
+        });
     };
     dom_js.add_event_listeners(button, {click: save});
     const view = dom_js.create_element('div.setup', null, [
