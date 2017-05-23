@@ -19,8 +19,8 @@ const setup = require('../app/setup');
 // };
 
 const labels = {
-    create_new_pump: 'Create new pump',
-    pump_name: 'Pump name',
+    create_new_account: 'Create new account',
+    account_name: 'Account name',
     save: 'Save',
 };
 
@@ -35,7 +35,7 @@ const create_pump_form = () => {
         dom_js.remove_element(button_save);
         dom_js.append_child(view, button_create);
     };
-    input_name = dom_js.create_element('input.input', {type: 'text', placeholder: labels.pump_name});
+    input_name = dom_js.create_element('input.input', {type: 'text', placeholder: labels.account_name});
     button_save = dom_js.create_element(
         'button.button',
         {type: 'button'},
@@ -52,7 +52,7 @@ const create_pump_form = () => {
     button_create = dom_js.create_element(
         'button.button',
         {type: 'button'},
-        [labels.create_new_pump],
+        [labels.create_new_account],
         {click: show_form}
     );
     view = dom_js.create_element('div.create_pump_form', null, [button_create]);
