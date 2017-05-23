@@ -59,7 +59,7 @@ const render = () => {
         return password.length === 0 || password !== confirm;
     };
     const verify = event => {
-        if (!password_is_invalid()) {
+        if (!password_is_invalid() && !get_setup().keystore) {
             input_seed.value = lightwallet.keystore.generateRandomSeed(input_password.value);
         }
         button.disabled = geth_path_is_invalid(input_geth_path.value) || password_is_invalid();
@@ -73,20 +73,20 @@ const render = () => {
     );
     input_password = dom_js.create_element(
         'input.input',
-        {placeholder: labels.password, type: 'password', value: setup.password || ''},
+        {placeholder: labels.password, type: 'password', value: setup.password || '', readonly: setup.password},
         null,
         {keyup: verify}
     );
     input_password_confirm = dom_js.create_element(
         'input.input',
-        {placeholder: labels.password_confirm, type: 'password', value: setup.password || ''},
+        {placeholder: labels.password_confirm, type: 'password', value: setup.password || '', readonly: setup.password},
         null,
         {keyup: verify}
     );
     text_seed = dom_js.create_element('div.text', null, [labels.seed_text]);
     input_seed = dom_js.create_element(
         'input.input seed',
-        {placeholder: labels.seed, type: 'text', readonly: true},
+        {placeholder: labels.seed, type: 'text', readonly: true, value: setup.seed || ''},
         null,
         {keyup: verify}
     );
@@ -96,8 +96,8 @@ const render = () => {
             const data = {
                 geth: input_geth_path.value,
                 password: input_password.value,
-                seed: input_seed.value,
-                keystore: keystore.serialize()
+                seed: get_setup().seed || input_seed.value,
+                keystore: get_setup().keystore || keystore.serialize()
             };
             fs.writeFileSync(path, JSON.stringify(data, null, 2));
             dom_js.empty_element(root);
