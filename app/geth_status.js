@@ -29,7 +29,6 @@ const update_status = (from, to) => {
     dom_js.append_child(text_status, labels[`text_${to}`]);
     dom_js.empty_element(button_action);
     dom_js.append_child(button_action, labels[`button_${to}`]);
-    if (to === 'ready') events.trigger('get_accounts');
 };
 
 const on_data_from_geth = data => {

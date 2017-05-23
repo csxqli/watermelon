@@ -85,3 +85,8 @@ body {
 .geth_status.ready .button {
     background: rgba(38, 156, 12, 0.67);
 }
+
+.create_pump_form .input,
+.create_pump_form .button {
+    display: inline-block;
+}
