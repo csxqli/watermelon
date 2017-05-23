@@ -11,6 +11,8 @@ const labels = {
     path_to_geth: 'Path to geth',
     password: 'Password',
     password_confirm: 'Confirm password',
+    seed: 'Wallet seed',
+    seed_text: 'Generated wallet seed (keep it safe)',
 };
 
 const get_setup = () => {
@@ -49,12 +51,17 @@ const render = () => {
     let input_geth_path;
     let input_password;
     let input_password_confirm;
+    let text_seed;
+    let input_seed;
     const password_is_invalid = () => {
         const password = input_password.value;
         const confirm = input_password_confirm.value;
         return password.length === 0 || password !== confirm;
     };
     const verify = event => {
+        if (!password_is_invalid() && !get_setup().keystore) {
+            input_seed.value = lightwallet.keystore.generateRandomSeed(input_password.value);
+        }
         button.disabled = geth_path_is_invalid(input_geth_path.value) || password_is_invalid();
         if (!button.disabled && event.keyCode === dom_js.key_codes.enter) button.click();
     };
@@ -76,13 +83,22 @@ const render = () => {
         null,
         {keyup: verify}
     );
+    text_seed = dom_js.create_element('div.text', null, [labels.seed_text]);
+    input_seed = dom_js.create_element(
+        'input.input seed',
+        {placeholder: labels.seed, type: 'text', readonly: true, value: setup.seed || ''},
+        null,
+        {change: verify}
+    );
     const on_save_click = () => {
-        lightwallet.keystore.createVault({password: input_password.value}, (err, keystore) => {
+        lightwallet.keystore.deriveKeyFromPassword(input_password.value, function (err, derived_key) {
+            if (err) throw err;
+            const keystore = new lightwallet.keystore(input_seed.value, derived_key);
             save({
                 geth: input_geth_path.value,
                 password: input_password.value,
-                keystore: get_setup().keystore || keystore.serialize(),
-                accounts: get_setup().accounts || {},
+                keystore: keystore.serialize(),
+                accounts: get_setup().accounts || [],
             });
             events.trigger('start');
         });
@@ -93,6 +109,8 @@ const render = () => {
         input_geth_path,
         input_password,
         input_password_confirm,
+        text_seed,
+        input_seed,
         button
     ]);
     const root = document.querySelector('#root');
