@@ -29,7 +29,7 @@ const create_account_form = () => {
                 setup_data.accounts.push({
                     name: account_name,
                     created_on: new Date(),
-                    address: addresses[new_account_index]
+                    address: '0x' + addresses[new_account_index]
                 });
                 setup.save(setup_data);
                 dom_js.remove_element(input_name);
