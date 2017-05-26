@@ -29,7 +29,11 @@ const create_account_form = () => {
                 setup_data.accounts.push({
                     name: account_name,
                     created_on: new Date(),
-                    address: '0x' + addresses[new_account_index]
+                    address: '0x' + addresses[new_account_index],
+                    transfer_to_exchange: 'ready',
+                    start_bots: 'not_ready',
+                    withdraw_from_exchange: 'not_ready',
+                    distribute: 'not_ready',
                 });
                 setup.save(setup_data);
                 dom_js.remove_element(input_name);

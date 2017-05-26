@@ -17,8 +17,24 @@ body {
     background: #ccc;
 }
 
+.hidden {
+    display: none;
+}
+
 .title {
     font-size: 96px;
+    font-family: 'PT Sans Narrow', sans-serif;
+    font-weight: bold;
+}
+
+.title_small {
+    font-size: 60px;
+    font-family: 'PT Sans Narrow', sans-serif;
+    font-weight: bold;
+}
+
+.title_tiny {
+    font-size: 36px;
     font-family: 'PT Sans Narrow', sans-serif;
     font-weight: bold;
 }
@@ -92,15 +108,14 @@ body {
 }
 
 .accounts_list {
-    margin-top: 24px
+    margin-top: 24px;
 }
 
 .accounts_list .account_item {
     display: inline-block;
     padding: 12px;
     margin: 0 12px 12px 0;
-    box-shadow: #999 0 0 6px;
-    /*width: 210px;*/
+    box-shadow: #999 0 0 3px;
     cursor: pointer;
 }
 
@@ -115,4 +130,59 @@ body {
 .accounts_list .account_item .address {
     cursor: pointer;
     font-size: 10px;
+}
+
+.accounts_list .account_item.selected {
+    background: #eee;
+}
+
+.account_details .header {
+    margin-top: 24px;
+}
+
+.account_details .header .left,
+.account_details .header .right {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.account_details .header .right {
+    text-align: right;
+    width: 100%;
+}
+
+.account_details .header .right .balance {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.account_details .incoming_transactions {
+    padding-top: 24px;
+}
+
+.transaction_item {
+    margin: 24px 24px 0 0;
+    display: inline-block;
+}
+
+.transaction_item .from,
+.transaction_item .value {
+    font-size: 15px;
+}
+
+.transaction_item .hash,
+.transaction_item .gas {
+    display: none;
+}
+
+.account_details .control_panel {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.transfer_form .input,
+.transfer_form .button,
+.distribute_form .input,
+.distribute_form .button {
+    display: inline-block;
 }

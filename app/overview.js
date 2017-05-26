@@ -9,7 +9,7 @@ const labels = {
 const render = () => {
     const title = dom_js.create_element('h2.title', null, [labels.title]);
     const view = dom_js.create_element('div.overview', {}, [
-        title,
+        // title,
         geth_status.render(),
         accounts.render()
     ]);
