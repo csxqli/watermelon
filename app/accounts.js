@@ -3,14 +3,20 @@ const dom_js = require('dom_js');
 const create_account_form = require('../app/create_account_form');
 const setup = require('../app/setup');
 
+const use_fake_address = true;
 const fake_address = '0x14c48295274d66dff94fc815006dc9108d8a3b8a';
 const labels = {
     incoming_transactions: 'Incoming transactions',
-    transfer_to_address: 'Recipient address',
+    transfer_to_address: 'Exchange address',
     transfer_submit: 'Transfer ETH',
     distribute_owner_address: 'Owner address',
     distribute_owner_percent: 'Owner percentage',
     distribute_submit: 'Distribute',
+    backup_wallet: 'Backup wallet',
+    pump_market: 'Pump market',
+    pump_duration: 'Duration in hours',
+    convert_to_btc_eth: ' convert to bitcoin',
+    start_bots_submit: 'Start',
 };
 const etherscan_api_token = '14CDYEPHA94J5RWFJMJ1UMRMC94BNRG5GB';
 let details;
@@ -29,7 +35,7 @@ const update_details = account => {
     const transactions_list = dom_js.create_element('div.incoming_transactions', null, [
         dom_js.create_element('h4.title_tiny', null, [labels.incoming_transactions])
     ]);
-    account.address = fake_address;
+    if (use_fake_address) account.address = fake_address;
     fetch(`https://api.etherscan.io/api?module=account&action=balance&address=${account.address}&tag=latest&apikey=${etherscan_api_token}`)
         .then(res => res.json())
         .then(res => dom_js.append_child(balance, ethereum_units.convert(res.result, 'wei', 'ether').toString() + ' ether'));
@@ -72,10 +78,41 @@ const update_details = account => {
         transfer_submit,
     ]);
 
+    // start bots
+    const on_start_bots_submit = () => {
+        start_bots_form.classList.add('hidden');
+        account.start_bots = 'done';
+        account.withdraw_from_exchange = 'ready';
+        update_buttons_state();
+    };
+    const pump_market = dom_js.create_element('select.input', {placeholder: labels.pump_market}, [
+        dom_js.create_element('option', {selected: true, disabled: true}, [labels.pump_market]),
+        dom_js.create_element('option', null, ['PIVX']),
+        dom_js.create_element('option', null, ['ETC']),
+        dom_js.create_element('option', null, ['PTC']),
+        dom_js.create_element('option', null, ['DGB']),
+        dom_js.create_element('option', null, ['ANT']),
+        dom_js.create_element('option', null, ['ICN']),
+        dom_js.create_element('option', null, ['STRATIS']),
+        dom_js.create_element('option', null, ['XRP']),
+    ]);
+    const pump_duration = dom_js.create_element('input.input', {type: 'number', placeholder: labels.pump_duration});
+    const convert_to_btc_eth = dom_js.create_element('label.input', null, [
+        dom_js.create_element('input', {type: 'checkbox'}),
+        labels.convert_to_btc_eth,
+    ]);
+    const start_bots_submit = dom_js.create_element('button.button', {type: 'button'}, [labels.start_bots_submit], {click: on_start_bots_submit});
+    const start_bots_form = dom_js.create_element('form.start_bots hidden', null, [
+        pump_market,
+        pump_duration,
+        convert_to_btc_eth,
+        start_bots_submit,
+    ]);
+
     // distribute form
     const on_distribute_submit = () => {
         distribute_form.classList.add('hidden');
-        account.start_bots = 'done';
+        account.distribute = 'done';
         update_buttons_state();
     };
     const distribute_owner_address = dom_js.create_element('input.input', {type: 'text', placeholder: labels.distribute_owner_address});
@@ -93,9 +130,8 @@ const update_details = account => {
         transfer_to_address.focus();
     };
     const on_start_bots_click = () => {
-        account.start_bots = 'done';
-        account.withdraw_from_exchange = 'ready';
-        update_buttons_state();
+        start_bots_form.classList.remove('hidden');
+        transfer_to_address.focus();
     };
     const on_withdraw_click = () => {
         account.withdraw_from_exchange = 'done';
@@ -107,10 +143,10 @@ const update_details = account => {
         distribute_owner_address.focus();
     };
 
-    button_transfer = dom_js.create_element('button.button', null, ['1. Transfer to exchange'], {click: on_button_transfer_click});
-    button_start_bots = dom_js.create_element('button.button', null, ['2. Start bots'], {click: on_start_bots_click});
-    button_withdraw = dom_js.create_element('button.button', null, ['3. Withdraw from exchange'], {click: on_withdraw_click});
-    button_distribute = dom_js.create_element('button.button', null, ['4. Distribute funds'], {click: on_distribute_click});
+    button_transfer = dom_js.create_element('button.button', null, ['Transfer to exchange'], {click: on_button_transfer_click});
+    button_start_bots = dom_js.create_element('button.button', null, ['Start bots'], {click: on_start_bots_click});
+    button_withdraw = dom_js.create_element('button.button', null, ['Withdraw from exchange'], {click: on_withdraw_click});
+    button_distribute = dom_js.create_element('button.button', null, ['Distribute funds'], {click: on_distribute_click});
     update_buttons_state();
     const control_panel = dom_js.create_element('div.control_panel', null, [
         button_transfer,
@@ -124,6 +160,7 @@ const update_details = account => {
         header,
         control_panel,
         transfer_form,
+        start_bots_form,
         distribute_form,
         transactions_list,
     ]);
@@ -150,7 +187,8 @@ const render = () => {
     view = dom_js.create_element('div.accounts', null, [
         list,
         details,
-        create_account_form()
+        create_account_form(),
+        dom_js.create_element('button.button', null, [labels.backup_wallet])
     ]);
     return view;
 };
