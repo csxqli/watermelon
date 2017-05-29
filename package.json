@@ -1,0 +1,29 @@
+{
+  "name": "watermelon",
+  "version": "2.0.0",
+  "description": "Watermelon has many seeds",
+  "main": "src/electron/main.js",
+  "repository": "git@github.com:Srirangan/watermelon.git",
+  "author": "Sri <srirangan@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-react": "^6.24.1",
+    "electron": "^1.6.10",
+    "stylus": "^0.54.5"
+  },
+  "scripts": {
+    "clean": "rm -rf dist && mkdir dist",
+    "babel": "./node_modules/.bin/babel src/react/app.js --out-file dist/watermelon.min.js",
+    "stylus": "./node_modules/.bin/stylus src/stylus/main.styl --out dist/watermelon.min.css",
+    "html": "cp src/electron/main.html dist/watermelon.html",
+    "build": "yarn run clean && yarn babel && yarn stylus && yarn html",
+    "electron": "./node_modules/.bin/electron .",
+    "start": "yarn build && yarn electron"
+  },
+  "dependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  }
+}
