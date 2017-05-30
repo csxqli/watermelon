@@ -109,13 +109,12 @@ const path_setup = path.join(__dirname, '../data/setup.json');
 class Wallet extends React.Component {
     constructor(props) {
         super(props);
-        this.read_setup_state_from_fs();
+        this.update_setup();
     }
 
     render() {
-        const must_setup = !fs.existsSync('../data/setup.json');
         let content = null;
-        if (this.state.setup_required) {
+        if (this.is_setup_required()) {
             content = <WalletSetup on_setup={setup => this.write_setup_to_fs(setup)}/>;
         }
         else if (this.state.setup) {
@@ -124,17 +123,25 @@ class Wallet extends React.Component {
         return <div className='Wallet'>{content}</div>;
     }
 
-    read_setup_state_from_fs() {
-        const setup_exists = fs.existsSync(path_setup);
+    is_setup_required() {
+        if (!fs.existsSync(path_setup)) return true;
+        if (!this.state.setup) return true;
+        if (!this.state.setup.password) return true;
+        if (!this.state.setup.seed) return true;
+        if (!this.state.setup.keystore) return true;
+        if (!this.state.setup.accounts) return true;
+        return false;
+    }
+
+    update_setup() {
         this.state = {
-            setup_required: !setup_exists,
-            setup: setup_exists && JSON.parse(fs.readFileSync(path_setup))
+            setup: fs.existsSync(path_setup) && JSON.parse(fs.readFileSync(path_setup))
         };
     }
 
     write_setup_to_fs(setup) {
         fs.writeFileSync(path_setup, JSON.stringify(setup, null, 2));
-        this.read_setup_state_from_fs();
+        this.update_setup();
         this.forceUpdate();
     }
 }
