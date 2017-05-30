@@ -58,13 +58,13 @@ class WalletSetup extends React.Component {
                     <input className='Input'
                            type='password'
                            placeholder='Password'
-                           onKeyUp={event => this.on_password_change(event)}/>
+                           onChange={event => this.on_password_change(event)}/>
                 </label>
                 <label className='Row'>
                     <input className='Input'
                            type='password'
                            placeholder='Confirm password'
-                           onKeyUp={event => this.on_confirm_change(event)}/>
+                           onChange={event => this.on_confirm_change(event)}/>
                 </label>
                 {row_seed}
                 {row_button}
@@ -138,7 +138,7 @@ class WalletCreateAccount extends React.Component {
                     <input className='Input'
                            type='text'
                            placeholder='Account name'
-                           onKeyUp={event => this.on_key_up(event)}/>
+                           onChange={event => this.on_key_up(event)}/>
                     {row_create}
                 </label>
             </form>;
