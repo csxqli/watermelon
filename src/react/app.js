@@ -3,6 +3,7 @@ import path from 'path';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import classnames from 'classnames';
+import lightwallet from 'eth-lightwallet';
 
 // ------ Tabs ------
 
@@ -70,7 +71,7 @@ class WalletSetup extends React.Component {
 
     generate_seed() {
         if (this.state.password.length > 0 && this.state.password === this.state.confirm) {
-            this.setState({seed: 'hello world'});
+            this.setState({seed: lightwallet.keystore.generateRandomSeed(this.state.password)});
         }
     };
 
@@ -84,7 +85,16 @@ class WalletSetup extends React.Component {
 
     on_submit(event) {
         event.preventDefault();
-        this.props.on_setup({password: this.state.password, seed: this.state.seed});
+        lightwallet.keystore.deriveKeyFromPassword(this.state.password, (err, derived_key) => {
+            if (err) throw err;
+            const keystore = new lightwallet.keystore(this.state.seed, derived_key);
+            this.props.on_setup({
+                password: this.state.password,
+                seed: this.state.seed,
+                keystore:keystore.serialize(),
+                accounts: [],
+            });
+        });
     }
 }
 

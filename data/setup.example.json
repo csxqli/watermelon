@@ -1,0 +1,34 @@
+{
+  "geth": "/usr/local/bin/geth",
+  "password": "aaa",
+  "keystore": "{\"encSeed\":{\"encStr\":\"7Z2mWgH8RsrxoNtMcH4VS1b5bF1wSTmtilzs7J7ET5foQzte2etCEkqvp3N0ZEftXSJ2yjjFdeANhca0vmkputjjhtNPTHbkou2v6dXRTizxLK70sDif2BxV2IY1WUFEv5urgs9Qkvxg0gopHVybn7q6gKeQQYO4laEeszBuCjzDtxJIUmLEaQ==\",\"nonce\":\"4YpOSEWvD8mi1ypEURf7wUcmgeLgA1cs\"},\"ksData\":{\"m/0'/0'/0'\":{\"info\":{\"curve\":\"secp256k1\",\"purpose\":\"sign\"},\"encHdPathPriv\":{\"encStr\":\"/e0iLRdokvndI3+yhalec1up4sYAmrxylBedHjBqeOqQx764ww3aK+PeU6hcC3oEAktjganuJkjp4O6XCXMOpaCDLBFU80BW7mHi/qcWi2xnDRHPs9CaI4Rf5N+2sL7XaOQe5/6RHygYGBN5KWPW/+6Oh3j1owUIgmwz5uxQpA==\",\"nonce\":\"58mzBZZFoEMlyB7lXvNti2eFeGsZHMZj\"},\"hdIndex\":0,\"encPrivKeys\":{},\"addresses\":[]}},\"encHdRootPriv\":{\"encStr\":\"NMjI1Pffz3XBysHzSSv+/Yzl3XRgCBIVd6GLaFcHSs9Cq3GgQHqMHGWsoO3geRWf/Qft7arNOGlNq4ayqiiXd2uoJTvL5Mjj94rWEiyh8Em5Ns5wc4d/ZkDQJ9k54KKo/QQZsW4QXOcR1w0r+x6n9zwX1cxqQ6fY+kzEXO0USA==\",\"nonce\":\"BV+n7nvKoYDHiH9ck6webBoqgMsql+Gz\"},\"salt\":\"lightwalletSalt\",\"version\":2}",
+  "accounts": [
+    {
+      "name": "June 2017",
+      "created_on": "2017-05-30T06:17:33.188Z",
+      "address": "0xab755349c288f0305b3d1004eac96994a8f9148c",
+      "transfer_to_exchange": "ready",
+      "start_bots": "not_ready",
+      "withdraw_from_exchange": "not_ready",
+      "distribute": "not_ready"
+    },
+    {
+      "name": "July 2017",
+      "created_on": "2017-05-30T06:17:39.153Z",
+      "address": "0xdd8fc5de9a36e229a59f270e44cf48fcc8a93361",
+      "transfer_to_exchange": "ready",
+      "start_bots": "not_ready",
+      "withdraw_from_exchange": "not_ready",
+      "distribute": "not_ready"
+    },
+    {
+      "name": "August 2017",
+      "created_on": "2017-05-30T06:17:42.814Z",
+      "address": "0x8b363b126b8bf98515151c420ef806be006b2f48",
+      "transfer_to_exchange": "ready",
+      "start_bots": "not_ready",
+      "withdraw_from_exchange": "not_ready",
+      "distribute": "not_ready"
+    }
+  ]
+}
