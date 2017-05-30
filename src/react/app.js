@@ -5,6 +5,17 @@ import ReactDOM from 'react-dom';
 import classnames from 'classnames';
 import lightwallet from 'eth-lightwallet';
 
+// ------ Globals ------
+
+const path_setup = path.join(__dirname, '../data/setup.json');
+
+const stages = [ 'accepting_investors',
+                 'funds_deposited',
+                 'pump_started',
+                 'pump_complete',
+                 'funds_withdrawn',
+                 'funds_distributed' ];
+
 // ------ Tabs ------
 
 class Tabs extends React.Component {
@@ -147,13 +158,11 @@ class WalletCreateAccount extends React.Component {
             content = <button className='Button'
                               onClick={() => this.expand()}>Create account</button>;
         }
-        return <div className='WalletCreateAccount Padding3'>
-            {content}
-        </div>
+        return <div className='WalletCreateAccount Padding3'>{content}</div>
     }
 
     on_key_up(event) {
-        this.setState({name: event.target.value});
+        this.setState({ name: event.target.value });
     }
 
     on_submit(event) {
@@ -164,36 +173,75 @@ class WalletCreateAccount extends React.Component {
             const index = this.props.index;
             keystore.generateNewAddress(derived_key, index + 1);
             const addresses = keystore.getAddresses();
-            this.props.on_create_account({
-                name: this.state.name,
-                index: index,
-                created_on: new Date(),
-                address: '0x' + addresses[index],
-            });
+            this.props.on_create_account({ name: this.state.name,
+                                           index: index,
+                                           created_on: new Date(),
+                                           address: '0x' + addresses[index],
+                                           stage: stages[0], });
             this.collapse();
         });
     }
 
     expand() {
-        this.setState({expanded: true});
+        this.setState({ expanded: true });
     }
 
     collapse() {
-        this.setState({expanded: false});
+        this.setState({ expanded: false });
     }
 }
 
-class WalletSelectedAccount extends React.Component {
+class WalletAccountStages extends React.Component {
+    render() {
+        let reached_current_stage = false;
+        const labels = [ 'Accepting investors',
+                         'Funds deposited',
+                         'Pump started',
+                         'Pump complete',
+                         'Funds withdrawn',
+                         'Funds distributed' ];
+        const items = stages.map((stage, index) => {
+            if (stage === this.props.stage) {
+                reached_current_stage = true;
+                return <div className='Item Current' key={`stage_${stage}`}>✓ {labels[index]}</div>;
+            }
+            else if (reached_current_stage) {
+                return <div className='Item Future' key={`stage_${stage}`}>☐ {labels[index]}</div>;
+            }
+            else {
+                return <div className='Item Past' key={`stage_${stage}`}>✓ {labels[index]}</div>;
+            }
+        });
+        return <div className='WalletAccountStages'>{items}</div>;
+    }
+}
+
+class WalletAccountActions extends React.Component {
+    render() {
+        return <div className='WalletAccountActions'>WalletAccountActions</div>;
+    }
+}
+
+class WalletAccountTransactions extends React.Component {
+    render() {
+        return <div className='WalletAccountTransactions'>WalletAccountTransactions</div>;
+    }
+}
+
+class WalletAccountDetails extends React.Component {
     render() {
         const account = this.props.account;
-        return <div className='WalletSelectedAccount Padding3'>
-            <h1>{account.name}</h1>
-            <h4>{account.address}</h4>
+        return <div className='WalletAccountDetails Padding3'>
+            <a className='Back'
+               onClick={() => this.props.on_account_select()}>Back to accounts</a>
+            <div className='Name'>{account.name}</div>
+            <div className='Address'>{account.address}</div>
+            <WalletAccountStages stage={account.stage}/>
+            <WalletAccountActions/>
+            <WalletAccountTransactions/>
         </div>;
     }
 }
-
-const path_setup = path.join(__dirname, '../data/setup.json');
 
 class Wallet extends React.Component {
     constructor(props) {
@@ -210,7 +258,8 @@ class Wallet extends React.Component {
             content = <WalletSetup on_setup={setup => this.write_setup_to_fs(setup)}/>;
         }
         else if (this.state.selected_account) {
-            content = <WalletSelectedAccount account={this.state.selected_account}/>;
+            content = <WalletAccountDetails account={this.state.selected_account}
+                                             on_account_select={() => this.on_account_select(null)}/>;
         }
         else {
             const setup = this.state.setup;

@@ -3,7 +3,10 @@
     padding 0
     box-sizing border-box
     font-family 'PT Sans Narrow', sans-serif
+    font-weight normal
+    color #333
     outline none
+    transition 100ms ease-in
 
 body
     margin 0
@@ -25,6 +28,8 @@ code
             font-weight bold
             cursor pointer
             display inline-block
+            &:hover
+                color #fff
         .Selected
             background #c33
             color #fff
@@ -73,3 +78,27 @@ code
         cursor pointer
         border 0.1rem solid #999
         background #eee
+
+.WalletAccountDetails
+    .Back
+        float right
+        font-size 1rem
+        color #999
+        text-decoration underline
+        cursor pointer
+        &:hover
+            color #666
+    .Name
+        font-size 3rem
+    .Address
+        font-size 1rem
+
+.WalletAccountStages
+    padding 1rem
+    .Item
+        display inline-block
+        padding 0 1rem 0 0
+        color #ccc
+        cursor default
+    .Current
+        color #333
