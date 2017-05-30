@@ -19,9 +19,9 @@ class Tabs extends React.Component {
         this.props.children.forEach((child, index) => {
             const on_click = () => this.setState({selected: index});
             buttons.push(
-                <span className={classnames({Button: true, Selected: this.state.selected === index})}
+                <div className={classnames({Button: true, Selected: this.state.selected === index})}
                       onClick={on_click}
-                      key={`tab_button_${index}`}>{child.label}</span>
+                      key={`tab_button_${index}`}>{child.label}</div>
             );
         });
         return <div className='Tabs'>
@@ -44,7 +44,7 @@ class WalletSetup extends React.Component {
         let row_save = null;
         if (this.state.seed) {
             row_seed = <label className='Row'>
-                <span className='Label'>Seed (write this down and keep it safe)</span>
+                <div className='Label'>Seed (write this down and keep it safe)</div>
                 <code>{this.state.seed}</code>
             </label>;
             row_save = <label className='Row'>
@@ -55,13 +55,13 @@ class WalletSetup extends React.Component {
             <form className='Form'
                          onSubmit={event => this.on_submit(event)}>
                 <label className='Row'>
-                    <span className='Label'>Password</span>
+                    <div className='Label'>Password</div>
                     <input className='Input'
                            type='password'
                            onKeyUp={event => this.on_password_change(event)}/>
                 </label>
                 <label className='Row'>
-                    <span className='Label'>Confirm password</span>
+                    <div className='Label'>Confirm password</div>
                     <input className='Input'
                            type='password'
                            onKeyUp={event => this.on_confirm_change(event)}/>
@@ -101,11 +101,77 @@ class WalletSetup extends React.Component {
     }
 }
 
-class WalletAccounts extends React.Component {
+class WalletAccountsList extends React.Component {
     render() {
-        return <div className='WalletAccounts Padding3'>
-            <h1>Accounts</h1>
+        const accounts = this.props.accounts;
+        if (!accounts || accounts.length === 0) return null;
+        return <div className='WalletAccountsList Padding3'>
+            {JSON.stringify(accounts)}
         </div>;
+    }
+}
+
+class WalletCreateAccount extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {expanded: false};
+    }
+
+    render() {
+        let content = null;
+        if (this.state.expanded) {
+            let row_create = null;
+            if (this.state.name) {
+                row_create = <label className='Row'>
+                    <button className='Input'
+                            onClick={() => this.on_submit()}>Create</button>
+                </label>;
+            }
+            content = <div className='Form'>
+                <label className='Row'>
+                    <div className='Label'>Account name</div>
+                    <input className='Input'
+                           type='text'
+                           onKeyUp={event => this.on_key_up(event)}/>
+                </label>
+                {row_create}
+            </div>;
+        }
+        else {
+            content = <button className='Input'
+                              onClick={() => this.expand()}>Create account</button>;
+        }
+        return <div className='WalletCreateAccount Padding3'>
+            {content}
+        </div>
+    }
+
+    on_key_up(event) {
+        this.setState({name: event.target.value});
+    }
+
+    on_submit() {
+        const keystore = lightwallet.keystore.deserialize(this.props.keystore);
+        keystore.keyFromPassword(this.props.password, (err, derived_key) => {
+            if (err) throw err;
+            const account_number = this.props.account_number;
+            keystore.generateNewAddress(derived_key, account_number + 1);
+            const addresses = keystore.getAddresses();
+            this.props.on_create_account({
+                name: this.state.name,
+                created_on: new Date(),
+                address: '0x' + addresses[account_number],
+            });
+            this.collapse();
+        });
+    }
+
+    expand() {
+        this.setState({expanded: true});
+    }
+
+    collapse() {
+        this.setState({expanded: false});
     }
 }
 
@@ -114,7 +180,9 @@ const path_setup = path.join(__dirname, '../data/setup.json');
 class Wallet extends React.Component {
     constructor(props) {
         super(props);
-        this.update_setup();
+        this.state = {
+            setup: fs.existsSync(path_setup) && JSON.parse(fs.readFileSync(path_setup))
+        }
     }
 
     render() {
@@ -122,32 +190,44 @@ class Wallet extends React.Component {
         if (this.is_setup_required()) {
             content = <WalletSetup on_setup={setup => this.write_setup_to_fs(setup)}/>;
         }
-        else if (this.state.setup) {
-            content = <WalletAccounts/>;
+        else {
+            const setup = this.state.setup;
+            content = <div>
+                <WalletAccountsList accounts={setup.accounts}/>
+                <WalletCreateAccount keystore={setup.keystore}
+                                     password={setup.password}
+                                     account_number={setup.accounts.length}
+                                     on_create_account={account => this.on_create_account(account)}/>
+            </div>;
         }
         return <div className='Wallet'>{content}</div>;
     }
 
     is_setup_required() {
         if (!fs.existsSync(path_setup)) return true;
-        if (!this.state.setup) return true;
+        if (!this.state.setup)          return true;
         if (!this.state.setup.password) return true;
-        if (!this.state.setup.seed) return true;
+        if (!this.state.setup.seed)     return true;
         if (!this.state.setup.keystore) return true;
         if (!this.state.setup.accounts) return true;
         return false;
     }
 
     update_setup() {
-        this.state = {
+        this.setState({
             setup: fs.existsSync(path_setup) && JSON.parse(fs.readFileSync(path_setup))
-        };
+        });
+    }
+
+    on_create_account(account) {
+        const setup = this.state.setup;
+        setup.accounts.push(account);
+        this.write_setup_to_fs(setup);
     }
 
     write_setup_to_fs(setup) {
         fs.writeFileSync(path_setup, JSON.stringify(setup, null, 2));
         this.update_setup();
-        this.forceUpdate();
     }
 }
 
