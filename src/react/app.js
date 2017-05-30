@@ -106,12 +106,13 @@ class WalletAccountsList extends React.Component {
         const accounts = this.props.accounts;
         if (!accounts || accounts.length === 0) return null;
         return <div className='WalletAccountsList Padding3'>
-            {accounts.map(this.get_item)}
+            {accounts.map(account => this.get_item(account))}
         </div>;
     }
 
     get_item(account) {
-        return <div className='Item' key={`account_item_${account.index}`}>
+        return <div className='Item' key={`account_item_${account.index}`}
+                    onClick={() => this.props.on_account_select(account)}>
             <div className='Name'>{account.name}</div>
             <div className='Address'>{account.address}</div>
         </div>;
@@ -182,13 +183,24 @@ class WalletCreateAccount extends React.Component {
     }
 }
 
+class WalletSelectedAccount extends React.Component {
+    render() {
+        const account = this.props.account;
+        return <div className='WalletSelectedAccount Padding3'>
+            <h1>{account.name}</h1>
+            <h4>{account.address}</h4>
+        </div>;
+    }
+}
+
 const path_setup = path.join(__dirname, '../data/setup.json');
 
 class Wallet extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            setup: fs.existsSync(path_setup) && JSON.parse(fs.readFileSync(path_setup))
+            setup: fs.existsSync(path_setup) && JSON.parse(fs.readFileSync(path_setup)),
+            selected_account: null,
         }
     }
 
@@ -197,10 +209,14 @@ class Wallet extends React.Component {
         if (this.is_setup_required()) {
             content = <WalletSetup on_setup={setup => this.write_setup_to_fs(setup)}/>;
         }
+        else if (this.state.selected_account) {
+            content = <WalletSelectedAccount account={this.state.selected_account}/>;
+        }
         else {
             const setup = this.state.setup;
             content = <div>
-                <WalletAccountsList accounts={setup.accounts}/>
+                <WalletAccountsList accounts={setup.accounts}
+                                    on_account_select={account => this.on_account_select(account)}/>
                 <WalletCreateAccount keystore={setup.keystore}
                                      password={setup.password}
                                      index={setup.accounts.length}
@@ -235,6 +251,10 @@ class Wallet extends React.Component {
     write_setup_to_fs(setup) {
         fs.writeFileSync(path_setup, JSON.stringify(setup, null, 2));
         this.update_setup();
+    }
+
+    on_account_select(account) {
+        this.setState({selected_account: account});
     }
 }
 
