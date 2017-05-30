@@ -109,6 +109,13 @@ class WalletAccountsList extends React.Component {
             {JSON.stringify(accounts)}
         </div>;
     }
+
+    get_item(account) {
+        return <div className='Item'>
+            <div className='Name'>{account.name}</div>
+            <div className='Address'>{account.address}</div>
+        </div>;
+    }
 }
 
 class WalletCreateAccount extends React.Component {
@@ -154,13 +161,14 @@ class WalletCreateAccount extends React.Component {
         const keystore = lightwallet.keystore.deserialize(this.props.keystore);
         keystore.keyFromPassword(this.props.password, (err, derived_key) => {
             if (err) throw err;
-            const account_number = this.props.account_number;
-            keystore.generateNewAddress(derived_key, account_number + 1);
+            const index = this.props.index;
+            keystore.generateNewAddress(derived_key, index + 1);
             const addresses = keystore.getAddresses();
             this.props.on_create_account({
                 name: this.state.name,
+                index: index,
                 created_on: new Date(),
-                address: '0x' + addresses[account_number],
+                address: '0x' + addresses[index],
             });
             this.collapse();
         });
@@ -196,7 +204,7 @@ class Wallet extends React.Component {
                 <WalletAccountsList accounts={setup.accounts}/>
                 <WalletCreateAccount keystore={setup.keystore}
                                      password={setup.password}
-                                     account_number={setup.accounts.length}
+                                     index={setup.accounts.length}
                                      on_create_account={account => this.on_create_account(account)}/>
             </div>;
         }
