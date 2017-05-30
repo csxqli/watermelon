@@ -51,22 +51,25 @@ class WalletSetup extends React.Component {
                 <button className='Input'>Save</button>
             </label>;
         }
-        return <form className='Form' onSubmit={event => this.on_submit(event)}>
-            <label className='Row'>
-                <span className='Label'>Password</span>
-                <input className='Input'
-                       type='password'
-                       onKeyUp={event => this.on_password_change(event)}/>
-            </label>
-            <label className='Row'>
-                <span className='Label'>Confirm password</span>
-                <input className='Input'
-                       type='password'
-                       onKeyUp={event => this.on_confirm_change(event)}/>
-            </label>
-            {row_seed}
-            {row_save}
-        </form>;
+        return <div className='WalletSetup Padding3'>
+            <form className='Form'
+                         onSubmit={event => this.on_submit(event)}>
+                <label className='Row'>
+                    <span className='Label'>Password</span>
+                    <input className='Input'
+                           type='password'
+                           onKeyUp={event => this.on_password_change(event)}/>
+                </label>
+                <label className='Row'>
+                    <span className='Label'>Confirm password</span>
+                    <input className='Input'
+                           type='password'
+                           onKeyUp={event => this.on_confirm_change(event)}/>
+                </label>
+                {row_seed}
+                {row_save}
+            </form>
+        </div>;
     }
 
     generate_seed() {
@@ -100,7 +103,9 @@ class WalletSetup extends React.Component {
 
 class WalletAccounts extends React.Component {
     render() {
-        return <div>accounts</div>
+        return <div className='WalletAccounts Padding3'>
+            <h1>Accounts</h1>
+        </div>;
     }
 }
 
@@ -146,11 +151,13 @@ class Wallet extends React.Component {
     }
 }
 
-// ------ CoinAnalysis ------
+// ------ MarketResearch ------
 
-class CoinAnalysis extends React.Component {
+class MarketResearch extends React.Component {
     render() {
-        return <h1>CoinAnalysis</h1>;
+        return <div className='MarketResearch Padding3'>
+            <h1>MarketResearch</h1>
+        </div>;
     }
 }
 
@@ -161,7 +168,7 @@ class App extends React.Component {
         return <div className='App'>
             <Tabs children={[
                 { label: 'Wallet', content: <Wallet/> },
-                { label: 'Coin Analysis', content: <CoinAnalysis/> },
+                { label: 'MarketResearch', content: <MarketResearch/> },
             ]}/>
         </div>;
     }
