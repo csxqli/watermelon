@@ -13,35 +13,51 @@ body
 code
     font-family 'PT Sans Mono', monospace
 
-.Padding3
-    padding 3rem
+.Tabs
+    .Buttons
+        background #333
+        border-bottom 0.6rem solid #c33
+        text-align right
+        .Button
+            padding 1rem
+            color #999
+            font-size 3rem
+            font-weight bold
+            cursor pointer
+            display inline-block
+        .Selected
+            background #c33
+            color #fff
+            text-shadow #000 0 0 2px
 
-.App
-    .Tabs
-        .Buttons
-            background #333
-            border-bottom 0.6rem solid #c33
-            text-align right
-            .Button
-                padding 1rem
-                color #999
-                font-size 3rem
-                font-weight bold
-                cursor pointer
-                display inline-block
-            .Selected
-                background #c33
-                color #fff
-                text-shadow #000 0 0 2px
+.Padding3
+    padding 3rem 3rem 0 3rem
 
 .Form
-    font-size 2rem
+    font-size 1.8rem
     .Row
         display block
         margin-bottom 1.5rem
-        .Label
-            display block
 
 .Input
     font-size 2rem
     padding 0.6rem
+
+.WalletAccountsList
+    .Item
+        display: inline-block
+        padding 1rem 0.75rem
+        margin 0 1rem 1rem 0
+        border 0.1rem solid #eee
+        &:hover
+            cursor pointer
+            border 0.1rem solid #999
+            background #eee
+        .Name
+            font-size 1.8rem
+        .Address
+            font-size 0.9rem
+    .Selected
+        cursor pointer
+        border 0.1rem solid #999
+        background #eee

@@ -41,33 +41,33 @@ class WalletSetup extends React.Component {
 
     render() {
         let row_seed = null;
-        let row_save = null;
+        let row_button = null;
         if (this.state.seed) {
             row_seed = <label className='Row'>
-                <div className='Label'>Seed (write this down and keep it safe)</div>
+                <div className='Label'>Seed (keep this safe)</div>
                 <code>{this.state.seed}</code>
             </label>;
-            row_save = <label className='Row'>
-                <button className='Input'>Save</button>
+            row_button = <label className='Row'>
+                <button className='Input'>Setup</button>
             </label>;
         }
         return <div className='WalletSetup Padding3'>
             <form className='Form'
                          onSubmit={event => this.on_submit(event)}>
                 <label className='Row'>
-                    <div className='Label'>Password</div>
                     <input className='Input'
                            type='password'
+                           placeholder='Password'
                            onKeyUp={event => this.on_password_change(event)}/>
                 </label>
                 <label className='Row'>
-                    <div className='Label'>Confirm password</div>
                     <input className='Input'
                            type='password'
+                           placeholder='Confirm password'
                            onKeyUp={event => this.on_confirm_change(event)}/>
                 </label>
                 {row_seed}
-                {row_save}
+                {row_button}
             </form>
         </div>;
     }
@@ -106,12 +106,12 @@ class WalletAccountsList extends React.Component {
         const accounts = this.props.accounts;
         if (!accounts || accounts.length === 0) return null;
         return <div className='WalletAccountsList Padding3'>
-            {JSON.stringify(accounts)}
+            {accounts.map(this.get_item)}
         </div>;
     }
 
     get_item(account) {
-        return <div className='Item'>
+        return <div className='Item' key={`account_item_${account.index}`}>
             <div className='Name'>{account.name}</div>
             <div className='Address'>{account.address}</div>
         </div>;
@@ -131,18 +131,18 @@ class WalletCreateAccount extends React.Component {
             if (this.state.name) {
                 row_create = <label className='Row'>
                     <button className='Input'
-                            onClick={() => this.on_submit()}>Create</button>
+                            onClick={event => this.on_submit(event)}>Create</button>
                 </label>;
             }
-            content = <div className='Form'>
+            content = <form className='Form'>
                 <label className='Row'>
-                    <div className='Label'>Account name</div>
                     <input className='Input'
                            type='text'
+                           placeholder='Account name'
                            onKeyUp={event => this.on_key_up(event)}/>
                 </label>
                 {row_create}
-            </div>;
+            </form>;
         }
         else {
             content = <button className='Input'
@@ -157,7 +157,8 @@ class WalletCreateAccount extends React.Component {
         this.setState({name: event.target.value});
     }
 
-    on_submit() {
+    on_submit(event) {
+        event.preventDefault();
         const keystore = lightwallet.keystore.deserialize(this.props.keystore);
         keystore.keyFromPassword(this.props.password, (err, derived_key) => {
             if (err) throw err;
@@ -201,11 +202,11 @@ class Wallet extends React.Component {
         else {
             const setup = this.state.setup;
             content = <div>
-                <WalletAccountsList accounts={setup.accounts}/>
                 <WalletCreateAccount keystore={setup.keystore}
                                      password={setup.password}
                                      index={setup.accounts.length}
                                      on_create_account={account => this.on_create_account(account)}/>
+                <WalletAccountsList accounts={setup.accounts}/>
             </div>;
         }
         return <div className='Wallet'>{content}</div>;
