@@ -58,6 +58,7 @@ class WalletSetup extends React.Component {
                     <input className='Input'
                            type='password'
                            placeholder='Password'
+                           autoFocus
                            onChange={event => this.on_password_change(event)}/>
                 </label>
                 <label className='Row'>
@@ -128,19 +129,18 @@ class WalletCreateAccount extends React.Component {
     render() {
         let content = null;
         if (this.state.expanded) {
-            let row_create = null;
+            let button = null;
             if (this.state.name) {
-                row_create = <button className='Button'
+                button = <button className='Button'
                                      onClick={event => this.on_submit(event)}>Create</button>;
             }
             content = <form className='Form'>
-                <label className='Row'>
-                    <input className='Input'
-                           type='text'
-                           placeholder='Account name'
-                           onChange={event => this.on_key_up(event)}/>
-                    {row_create}
-                </label>
+                <input className='Input'
+                       type='text'
+                       placeholder='Account name'
+                       autoFocus
+                       onChange={event => this.on_key_up(event)}/>
+                {button}
             </form>;
         }
         else {
