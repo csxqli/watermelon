@@ -19,13 +19,13 @@ class Tabs extends React.Component {
         this.props.children.forEach((child, index) => {
             const on_click = () => this.setState({selected: index});
             buttons.push(
-                <div className={classnames({Button: true, Selected: this.state.selected === index})}
+                <div className={classnames({TabButton: true, Selected: this.state.selected === index})}
                       onClick={on_click}
                       key={`tab_button_${index}`}>{child.label}</div>
             );
         });
         return <div className='Tabs'>
-            <div className='Buttons'>{buttons}</div>
+            <div className='TabButtons'>{buttons}</div>
             <div className='Content'>{this.props.children[this.state.selected].content}</div>
         </div>;
     }
@@ -48,7 +48,7 @@ class WalletSetup extends React.Component {
                 <code>{this.state.seed}</code>
             </label>;
             row_button = <label className='Row'>
-                <button className='Input'>Setup</button>
+                <button className='Button'>Setup</button>
             </label>;
         }
         return <div className='WalletSetup Padding3'>
@@ -129,10 +129,8 @@ class WalletCreateAccount extends React.Component {
         if (this.state.expanded) {
             let row_create = null;
             if (this.state.name) {
-                row_create = <label className='Row'>
-                    <button className='Input'
-                            onClick={event => this.on_submit(event)}>Create</button>
-                </label>;
+                row_create = <button className='Button'
+                                     onClick={event => this.on_submit(event)}>Create</button>;
             }
             content = <form className='Form'>
                 <label className='Row'>
@@ -140,12 +138,12 @@ class WalletCreateAccount extends React.Component {
                            type='text'
                            placeholder='Account name'
                            onKeyUp={event => this.on_key_up(event)}/>
+                    {row_create}
                 </label>
-                {row_create}
             </form>;
         }
         else {
-            content = <button className='Input'
+            content = <button className='Button'
                               onClick={() => this.expand()}>Create account</button>;
         }
         return <div className='WalletCreateAccount Padding3'>
@@ -202,11 +200,11 @@ class Wallet extends React.Component {
         else {
             const setup = this.state.setup;
             content = <div>
+                <WalletAccountsList accounts={setup.accounts}/>
                 <WalletCreateAccount keystore={setup.keystore}
                                      password={setup.password}
                                      index={setup.accounts.length}
                                      on_create_account={account => this.on_create_account(account)}/>
-                <WalletAccountsList accounts={setup.accounts}/>
             </div>;
         }
         return <div className='Wallet'>{content}</div>;

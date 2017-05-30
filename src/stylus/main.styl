@@ -14,11 +14,11 @@ code
     font-family 'PT Sans Mono', monospace
 
 .Tabs
-    .Buttons
+    .TabButtons
         background #333
         border-bottom 0.6rem solid #c33
         text-align right
-        .Button
+        .TabButton
             padding 1rem
             color #999
             font-size 3rem
@@ -28,7 +28,7 @@ code
         .Selected
             background #c33
             color #fff
-            text-shadow #000 0 0 2px
+            text-shadow #000 0 0 0.2rem
 
 .Padding3
     padding 3rem 3rem 0 3rem
@@ -40,8 +40,20 @@ code
         margin-bottom 1.5rem
 
 .Input
-    font-size 2rem
     padding 0.6rem
+    border 0.1rem solid #ccc
+    color #666
+    font-size 1.8rem
+
+.Button
+    padding 0.6rem
+    border 0.1rem solid #333
+    cursor pointer
+    background #666
+    color #fff
+    font-weight bold
+    font-size 1.8rem
+    text-shadow #000 0 0 0.2rem
 
 .WalletAccountsList
     .Item
