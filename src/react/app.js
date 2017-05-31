@@ -177,7 +177,8 @@ class WalletCreateAccount extends React.Component {
                                            index: index,
                                            created_on: new Date(),
                                            address: '0x' + addresses[index],
-                                           stage: stages[0], });
+                                           stage: stages[0],
+                                           currency: 'ETH' });
             this.collapse();
         });
     }
@@ -252,8 +253,8 @@ class WalletAccountActions extends React.Component {
         else if (stage === 'pump_complete') {
             return [<li className='Item' key='item_1'>Pump has finished</li>,
                     <li className='Item' key='item_2'>{link_convert_currency}</li>,
-                    <li className='Item' key='item_3'>{link_withdraw_funds}</li>,
-                    <li className='Item' key='item_4'>{link_start_pump}</li>];
+                    <li className='Item' key='item_3'>{link_start_pump}</li>,
+                    <li className='Item' key='item_4'>{link_withdraw_funds}</li>,];
         }
         else if (stage === 'funds_withdrawn') {
             return [<li className='Item' key='item_1'>Funds have been withdrawn</li>,
@@ -266,38 +267,105 @@ class WalletAccountActions extends React.Component {
 }
 
 class DepositFundsForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
     render() {
-        return <div className='DepositFundsForm'>DepositFundsForm</div>;
+        let button;
+        if (this.state.address) {
+            button = <button className='Button'>Deposit</button>
+        }
+        return <form className='DepositFundsForm Form Padding2Top'
+                     onSubmit={ event => this.on_submit(event) }>
+            <input className='Input'
+                   type='text'
+                   placeholder='Exchange ETH wallet address'
+                   autoFocus
+                   style={{width: 640}}
+                   onChange={event => this.on_change(event)}/>
+            {button}
+        </form>;
+    }
+
+    on_change(event) {
+        this.setState({ address: event.target.value });
+    }
+
+    on_submit(event) {
+        event.preventDefault();
+        this.props.on_submit(this.state.address);
     }
 }
 
 class ConvertCurrencyForm extends React.Component {
     render() {
-        return <div className='ConvertCurrencyForm'>ConvertCurrencyForm</div>;
+        return <form className='ConvertCurrencyForm Form Padding2Top'
+                     onSubmit={event => this.on_submit(event)}>
+            <button className='Button'>Convert</button>
+        </form>;
+    }
+
+    on_submit(event) {
+        event.preventDefault();
+        this.props.on_submit();
     }
 }
 
 class StartPumpForm extends React.Component {
     render() {
-        return <div className='StartPumpForm'>StartPumpForm</div>;
+        return <form className='StartPumpForm Form Padding2Top'
+                     onSubmit={event => this.on_submit(event)}>
+            <button className='Button'>Start pump</button>
+        </form>;
+    }
+
+    on_submit(event) {
+        event.preventDefault();
+        this.props.on_submit();
     }
 }
 
 class StartDumpForm extends React.Component {
     render() {
-        return <div className='StartDumpForm'>StartDumpForm</div>;
+        return <form className='StartDumpForm Form Padding2Top'
+                     onSubmit={event => this.on_submit(event)}>
+            <button className='Button'>Start dump</button>
+        </form>;
+    }
+
+    on_submit(event) {
+        event.preventDefault();
+        this.props.on_submit();
     }
 }
 
 class WithdrawFundsForm extends React.Component {
     render() {
-        return <div className='WithdrawFundsForm'>WithdrawFundsForm</div>;
+        return <form className='WithdrawFundsForm Form Padding2Top'
+                     onSubmit={event => this.on_submit(event)}>
+            <button className='Button'>Withdraw</button>
+        </form>;
+    }
+
+    on_submit(event) {
+        event.preventDefault();
+        this.props.on_submit();
     }
 }
 
 class DistributeFundsForm extends React.Component {
     render() {
-        return <div className='DistributeFundsForm'>DistributeFundsForm</div>;
+        return <form className='DistributeFundsForm Form Padding2Top'
+                     onSubmit={event => this.on_submit(event)}>
+            <button className='Button'>Distribute</button>
+        </form>;
+    }
+
+    on_submit(event) {
+        event.preventDefault();
+        this.props.on_submit();
     }
 }
 
@@ -322,12 +390,30 @@ class WalletAccountDetails extends React.Component {
 
     render() {
         const account = this.props.account;
-        const deposit_funds_form = this.state.show_deposit_funds_form ? <DepositFundsForm/> : null;
-        const convert_currency_form = this.state.show_convert_currency_form ? <ConvertCurrencyForm/> : null;
-        const start_pump_form = this.state.show_start_pump_form ? <StartPumpForm/> : null;
-        const start_dump_form = this.state.show_start_dump_form ? <StartDumpForm/> : null;
-        const withdraw_funds_form = this.state.show_withdraw_funds_form ? <WithdrawFundsForm/> : null;
-        const distribute_funds_form = this.state.show_distribute_funds_form ? <DistributeFundsForm/> : null;
+        let deposit_funds_form = null;
+        let convert_currency_form = null;
+        let start_pump_form = null;
+        let start_dump_form = null;
+        let withdraw_funds_form = null;
+        let distribute_funds_form = null;
+        if (this.state.show_deposit_funds_form) {
+            deposit_funds_form = <DepositFundsForm on_submit={address => this.submit_deposit_funds_form(address)}/>;
+        }
+        if (this.state.show_convert_currency_form) {
+            convert_currency_form = <ConvertCurrencyForm on_submit={() => this.submit_convert_currency_form()}/>;
+        }
+        if (this.state.show_start_pump_form) {
+            start_pump_form = <StartPumpForm on_submit={() => this.submit_start_pump_form()}/>;
+        }
+        if (this.state.show_start_dump_form) {
+            start_dump_form = <StartDumpForm on_submit={() => this.submit_start_dump_form()}/>;
+        }
+        if (this.state.show_withdraw_funds_form) {
+            withdraw_funds_form = <WithdrawFundsForm on_submit={() => this.submit_withdraw_funds_form()}/>;
+        }
+        if (this.state.show_distribute_funds_form) {
+            distribute_funds_form = <DistributeFundsForm on_submit={() => this.submit_distribute_funds_form()}/>;
+        }
         return <div className='WalletAccountDetails Padding3'>
             <a className='Back'
                onClick={() => this.props.on_account_select()}>Back to accounts</a>
@@ -374,6 +460,45 @@ class WalletAccountDetails extends React.Component {
     show_distribute_funds_form() {
         this.setState({show_distribute_funds_form: true});
     }
+
+    submit_deposit_funds_form(address) {
+        this.setState({show_deposit_funds_form: false});
+        const account = this.props.account;
+        account.stage = 'funds_deposited';
+        this.props.save_account(account);
+    }
+
+    submit_convert_currency_form() {
+        this.setState({show_convert_currency_form: false});
+    }
+
+    submit_start_pump_form() {
+        this.setState({show_start_pump_form: false});
+        const account = this.props.account;
+        account.stage = 'pump_started';
+        this.props.save_account(account);
+    }
+
+    submit_start_dump_form() {
+        this.setState({show_start_dump_form: false});
+        const account = this.props.account;
+        account.stage = 'pump_complete';
+        this.props.save_account(account);
+    }
+
+    submit_withdraw_funds_form() {
+        this.setState({show_withdraw_funds_form: false});
+        const account = this.props.account;
+        account.stage = 'funds_withdrawn';
+        this.props.save_account(account);
+    }
+
+    submit_distribute_funds_form() {
+        this.setState({show_distribute_funds_form: false});
+        const account = this.props.account;
+        account.stage = 'funds_distributed';
+        this.props.save_account(account);
+    }
 }
 
 class Wallet extends React.Component {
@@ -392,7 +517,8 @@ class Wallet extends React.Component {
         }
         else if (this.state.selected_account) {
             content = <WalletAccountDetails account={this.state.selected_account}
-                                             on_account_select={() => this.on_account_select(null)}/>;
+                                            on_account_select={() => this.on_account_select(null)}
+                                            save_account={account => this.save_account(account)}/>;
         }
         else {
             const setup = this.state.setup;
@@ -437,6 +563,12 @@ class Wallet extends React.Component {
 
     on_account_select(account) {
         this.setState({selected_account: account});
+    }
+
+    save_account(account) {
+        const setup = this.state.setup;
+        setup.accounts[account.index] = account;
+        this.write_setup_to_fs(setup);
     }
 }
 
