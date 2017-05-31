@@ -218,13 +218,45 @@ class WalletAccountStages extends React.Component {
 
 class WalletAccountActions extends React.Component {
     render() {
-        return <div className='WalletAccountActions'>WalletAccountActions</div>;
+        return <ul className='WalletAccountActions'>{this.get_actions(this.props.stage)}</ul>;
+    }
+
+    get_actions(stage) {
+        if (stage === 'accepting_investors') {
+            return [<li className='Item' key='item_1'>Account is now accepting investors</li>,
+                    <li className='Item' key='item_2'>Investors can send Ether to the address above</li>,
+                    <li className='Item' key='item_3'>
+                        After receiving funds you can <a className='Link'>deposit funds</a> to exchange
+                    </li>];
+        }
+        else if (stage === 'funds_deposited') {
+            return [<li className='Item' key='item_1'>Funds have been deposited at the exchange</li>,
+                    <li className='Item' key='item_2'>Convert <a className='Link'>Ether to Bitcoin</a></li>,
+                    <li className='Item' key='item_3'><a className='Link'>Start the pump</a></li>];
+        }
+        else if (stage === 'pump_started') {
+            return [<li className='Item' key='item_1'>Pump has been started</li>,
+                    <li className='Item' key='item_2'>Situation can be monitored on the exchange</li>,
+                    <li className='Item' key='item_3'><a className='Link'>Start the dump</a></li>];
+        }
+        else if (stage === 'pump_complete') {
+            return [<li className='Item' key='item_1'>Pump has finished</li>,
+                    <li className='Item' key='item_2'><a className='Link'>Withdraw the funds</a></li>,
+                    <li className='Item' key='item_3'><a className='Link'>Start a new pump</a></li>];
+        }
+        else if (stage === 'funds_withdrawn') {
+            return [<li className='Item' key='item_1'>Funds have been withdrawn</li>,
+                    <li className='Item' key='item_2'><a className='Link'>Distribute the funds</a></li>];
+        }
+        else if (stage === 'funds_distributed') {
+            return [<li className='Item' key='item_1'>Funds have been distributed</li>];
+        }
     }
 }
 
 class WalletAccountTransactions extends React.Component {
     render() {
-        return <div className='WalletAccountTransactions'>WalletAccountTransactions</div>;
+        return <div className='WalletAccountTransactions'></div>;
     }
 }
 
@@ -237,7 +269,7 @@ class WalletAccountDetails extends React.Component {
             <div className='Name'>{account.name}</div>
             <div className='Address'>{account.address}</div>
             <WalletAccountStages stage={account.stage}/>
-            <WalletAccountActions/>
+            <WalletAccountActions stage={account.stage}/>
             <WalletAccountTransactions/>
         </div>;
     }
