@@ -222,35 +222,82 @@ class WalletAccountActions extends React.Component {
     }
 
     get_actions(stage) {
+        const link_deposit_funds = <a className='Link'
+                                      onClick={() => this.props.on_deposit_funds_click()}>deposit funds</a>;
+        const link_convert_currency = <a className='Link'
+                                         onClick={() => this.props.on_convert_currency_click()}>Convert currency</a>;
+        const link_start_pump = <a className='Link'
+                                   onClick={() => this.props.on_start_pump_click()}>Start pump</a>;
+        const link_start_dump = <a className='Link'
+                                   onClick={() => this.props.on_start_dump_click()}>Start dump</a>;
+        const link_withdraw_funds = <a className='Link'
+                                       onClick={() => this.props.on_withdraw_funds_click()}>Withdraw the funds</a>;
+        const link_distribute_funds = <a className='Link'
+                                         onClick={() => this.props.on_distribute_funds_click()}>Distribute the funds</a>;
         if (stage === 'accepting_investors') {
             return [<li className='Item' key='item_1'>Account is now accepting investors</li>,
                     <li className='Item' key='item_2'>Investors can send Ether to the address above</li>,
-                    <li className='Item' key='item_3'>
-                        After receiving funds you can <a className='Link'>deposit funds</a> to exchange
-                    </li>];
+                    <li className='Item' key='item_3'>After receiving funds you can {link_deposit_funds} to exchange</li>];
         }
         else if (stage === 'funds_deposited') {
             return [<li className='Item' key='item_1'>Funds have been deposited at the exchange</li>,
-                    <li className='Item' key='item_2'>Convert <a className='Link'>Ether to Bitcoin</a></li>,
-                    <li className='Item' key='item_3'><a className='Link'>Start the pump</a></li>];
+                    <li className='Item' key='item_2'>{link_convert_currency}</li>,
+                    <li className='Item' key='item_3'>{link_start_pump}</li>];
         }
         else if (stage === 'pump_started') {
             return [<li className='Item' key='item_1'>Pump has been started</li>,
                     <li className='Item' key='item_2'>Situation can be monitored on the exchange</li>,
-                    <li className='Item' key='item_3'><a className='Link'>Start the dump</a></li>];
+                    <li className='Item' key='item_3'>{link_start_dump}</li>];
         }
         else if (stage === 'pump_complete') {
             return [<li className='Item' key='item_1'>Pump has finished</li>,
-                    <li className='Item' key='item_2'><a className='Link'>Withdraw the funds</a></li>,
-                    <li className='Item' key='item_3'><a className='Link'>Start a new pump</a></li>];
+                    <li className='Item' key='item_2'>{link_convert_currency}</li>,
+                    <li className='Item' key='item_3'>{link_withdraw_funds}</li>,
+                    <li className='Item' key='item_4'>{link_start_pump}</li>];
         }
         else if (stage === 'funds_withdrawn') {
             return [<li className='Item' key='item_1'>Funds have been withdrawn</li>,
-                    <li className='Item' key='item_2'><a className='Link'>Distribute the funds</a></li>];
+                    <li className='Item' key='item_2'>{link_distribute_funds}</li>];
         }
         else if (stage === 'funds_distributed') {
             return [<li className='Item' key='item_1'>Funds have been distributed</li>];
         }
+    }
+}
+
+class DepositFundsForm extends React.Component {
+    render() {
+        return <div className='DepositFundsForm'>DepositFundsForm</div>;
+    }
+}
+
+class ConvertCurrencyForm extends React.Component {
+    render() {
+        return <div className='ConvertCurrencyForm'>ConvertCurrencyForm</div>;
+    }
+}
+
+class StartPumpForm extends React.Component {
+    render() {
+        return <div className='StartPumpForm'>StartPumpForm</div>;
+    }
+}
+
+class StartDumpForm extends React.Component {
+    render() {
+        return <div className='StartDumpForm'>StartDumpForm</div>;
+    }
+}
+
+class WithdrawFundsForm extends React.Component {
+    render() {
+        return <div className='WithdrawFundsForm'>WithdrawFundsForm</div>;
+    }
+}
+
+class DistributeFundsForm extends React.Component {
+    render() {
+        return <div className='DistributeFundsForm'>DistributeFundsForm</div>;
     }
 }
 
@@ -261,17 +308,71 @@ class WalletAccountTransactions extends React.Component {
 }
 
 class WalletAccountDetails extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            show_deposit_funds_form: false,
+            show_convert_currency_form: false,
+            show_start_pump_form: false,
+            show_start_dump_form: false,
+            show_withdraw_funds_form: false,
+            show_distribute_funds_form: false,
+        };
+    }
+
     render() {
         const account = this.props.account;
+        const deposit_funds_form = this.state.show_deposit_funds_form ? <DepositFundsForm/> : null;
+        const convert_currency_form = this.state.show_convert_currency_form ? <ConvertCurrencyForm/> : null;
+        const start_pump_form = this.state.show_start_pump_form ? <StartPumpForm/> : null;
+        const start_dump_form = this.state.show_start_dump_form ? <StartDumpForm/> : null;
+        const withdraw_funds_form = this.state.show_withdraw_funds_form ? <WithdrawFundsForm/> : null;
+        const distribute_funds_form = this.state.show_distribute_funds_form ? <DistributeFundsForm/> : null;
         return <div className='WalletAccountDetails Padding3'>
             <a className='Back'
                onClick={() => this.props.on_account_select()}>Back to accounts</a>
             <div className='Name'>{account.name}</div>
             <div className='Address'>{account.address}</div>
             <WalletAccountStages stage={account.stage}/>
-            <WalletAccountActions stage={account.stage}/>
+            <WalletAccountActions stage={account.stage}
+                                  on_deposit_funds_click={() => this.show_deposit_funds_form()}
+                                  on_convert_currency_click={() => this.show_convert_currency_form()}
+                                  on_start_pump_click={() => this.show_start_pump_form()}
+                                  on_start_dump_click={() => this.show_start_dump_form()}
+                                  on_withdraw_funds_click={() => this.show_withdraw_funds_form()}
+                                  on_distribute_funds_click={() => this.show_distribute_funds_form()}/>
+            {deposit_funds_form}
+            {convert_currency_form}
+            {start_pump_form}
+            {start_dump_form}
+            {withdraw_funds_form}
+            {distribute_funds_form}
             <WalletAccountTransactions/>
         </div>;
+    }
+
+    show_deposit_funds_form() {
+        this.setState({show_deposit_funds_form: true});
+    }
+
+    show_convert_currency_form() {
+        this.setState({show_convert_currency_form: true});
+    }
+
+    show_start_pump_form() {
+        this.setState({show_start_pump_form: true});
+    }
+
+    show_start_dump_form() {
+        this.setState({show_start_dump_form: true});
+    }
+
+    show_withdraw_funds_form() {
+        this.setState({show_withdraw_funds_form: true});
+    }
+
+    show_distribute_funds_form() {
+        this.setState({show_distribute_funds_form: true});
     }
 }
 
