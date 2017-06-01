@@ -376,16 +376,16 @@ class WalletAccountTransactions extends React.Component {
 }
 
 class WalletAccountDetails extends React.Component {
+    default_state;
     constructor(props) {
         super(props);
-        this.state = {
-            show_deposit_funds_form: false,
-            show_convert_currency_form: false,
-            show_start_pump_form: false,
-            show_start_dump_form: false,
-            show_withdraw_funds_form: false,
-            show_distribute_funds_form: false,
-        };
+        this.default_state = { show_deposit_funds_form: false,
+                               show_convert_currency_form: false,
+                               show_start_pump_form: false,
+                               show_start_dump_form: false,
+                               show_withdraw_funds_form: false,
+                               show_distribute_funds_form: false, }
+        this.state = {...this.default_state};
     }
 
     render() {
@@ -438,63 +438,63 @@ class WalletAccountDetails extends React.Component {
     }
 
     show_deposit_funds_form() {
-        this.setState({show_deposit_funds_form: true});
+        this.setState({ ...this.default_state, show_deposit_funds_form: true });
     }
 
     show_convert_currency_form() {
-        this.setState({show_convert_currency_form: true});
+        this.setState({ ...this.default_state, show_convert_currency_form: true });
     }
 
     show_start_pump_form() {
-        this.setState({show_start_pump_form: true});
+        this.setState({ ...this.default_state, show_start_pump_form: true });
     }
 
     show_start_dump_form() {
-        this.setState({show_start_dump_form: true});
+        this.setState({ ...this.default_state, show_start_dump_form: true });
     }
 
     show_withdraw_funds_form() {
-        this.setState({show_withdraw_funds_form: true});
+        this.setState({ ...this.default_state, show_withdraw_funds_form: true });
     }
 
     show_distribute_funds_form() {
-        this.setState({show_distribute_funds_form: true});
+        this.setState({ ...this.default_state, show_distribute_funds_form: true });
     }
 
     submit_deposit_funds_form(address) {
-        this.setState({show_deposit_funds_form: false});
+        this.setState({ ...this.default_state, show_deposit_funds_form: false });
         const account = this.props.account;
         account.stage = 'funds_deposited';
         this.props.save_account(account);
     }
 
     submit_convert_currency_form() {
-        this.setState({show_convert_currency_form: false});
+        this.setState({ ...this.default_state, show_convert_currency_form: false });
     }
 
     submit_start_pump_form() {
-        this.setState({show_start_pump_form: false});
+        this.setState({ ...this.default_state, show_start_pump_form: false });
         const account = this.props.account;
         account.stage = 'pump_started';
         this.props.save_account(account);
     }
 
     submit_start_dump_form() {
-        this.setState({show_start_dump_form: false});
+        this.setState({ ...this.default_state, show_start_dump_form: false });
         const account = this.props.account;
         account.stage = 'pump_complete';
         this.props.save_account(account);
     }
 
     submit_withdraw_funds_form() {
-        this.setState({show_withdraw_funds_form: false});
+        this.setState({ ...this.default_state, show_withdraw_funds_form: false });
         const account = this.props.account;
         account.stage = 'funds_withdrawn';
         this.props.save_account(account);
     }
 
     submit_distribute_funds_form() {
-        this.setState({show_distribute_funds_form: false});
+        this.setState({ ...this.default_state, show_distribute_funds_form: false });
         const account = this.props.account;
         account.stage = 'funds_distributed';
         this.props.save_account(account);
