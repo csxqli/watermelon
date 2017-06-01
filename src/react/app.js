@@ -465,14 +465,14 @@ class WalletAccountDetails extends React.Component {
                                   on_start_dump_click={() => this.show_start_dump_form()}
                                   on_withdraw_funds_click={() => this.show_withdraw_funds_form()}
                                   on_distribute_funds_click={() => this.show_distribute_funds_form()}/>
+            <WalletBalances address_exchange_eth={account.address_exchange_eth}
+                            address_exchange_btc={account.address_exchange_btc}/>
             {deposit_funds_form}
             {convert_currency_form}
             {start_pump_form}
             {start_dump_form}
             {withdraw_funds_form}
             {distribute_funds_form}
-            <WalletBalances address_exchange_eth={account.address_exchange_eth}
-                            address_exchange_btc={account.address_exchange_btc}/>
             <WalletAccountTransactions/>
         </div>;
     }
