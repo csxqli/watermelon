@@ -126,7 +126,7 @@ class WalletAccountsList extends React.Component {
         return <div className='Item' key={`account_item_${account.index}`}
                     onClick={() => this.props.on_account_select(account)}>
             <div className='Name'>{account.name}</div>
-            <div className='Address'>{account.address}</div>
+            <div className='Address'>{account.address_local_eth}</div>
         </div>;
     }
 }
@@ -176,7 +176,7 @@ class WalletCreateAccount extends React.Component {
             this.props.on_create_account({ name: this.state.name,
                                            index: index,
                                            created_on: new Date(),
-                                           address: '0x' + addresses[index],
+                                           address_local_eth: '0x' + addresses[index],
                                            stage: stages[0],
                                            currency: 'ETH' });
             this.collapse();
@@ -301,9 +301,10 @@ class DepositFundsForm extends React.Component {
 
 class ConvertCurrencyForm extends React.Component {
     render() {
+        const label = this.props.currency === 'ETH' ? 'Convert Ether to Bitcoin' : 'Convert Bitcoin to Ether'
         return <form className='ConvertCurrencyForm Form Padding2Top'
                      onSubmit={event => this.on_submit(event)}>
-            <button className='Button'>Convert</button>
+            <button className='Button'>{label}</button>
         </form>;
     }
 
@@ -369,6 +370,28 @@ class DistributeFundsForm extends React.Component {
     }
 }
 
+class WalletBalances extends React.Component {
+    render() {
+        return <div className='WalletBalances Padding2Top'>
+            <div className='Balance Local'>
+                <div className='Amount'>150.54</div>
+                <div className='Unit'>Ether</div>
+                <div className='Label'>Local balance</div>
+            </div>
+            <div className='Balance'>
+                <div className='Amount'>0.31</div>
+                <div className='Unit'>Ether</div>
+                <div className='Label'>Exchange balance</div>
+            </div>
+            <div className='Balance'>
+                <div className='Amount'>17.1</div>
+                <div className='Unit'>Bitcoin</div>
+                <div className='Label'>Exchange balance</div>
+            </div>
+        </div>;
+    }
+}
+
 class WalletAccountTransactions extends React.Component {
     render() {
         return <div className='WalletAccountTransactions'></div>;
@@ -400,7 +423,8 @@ class WalletAccountDetails extends React.Component {
             deposit_funds_form = <DepositFundsForm on_submit={address => this.submit_deposit_funds_form(address)}/>;
         }
         if (this.state.show_convert_currency_form) {
-            convert_currency_form = <ConvertCurrencyForm on_submit={() => this.submit_convert_currency_form()}/>;
+            convert_currency_form = <ConvertCurrencyForm on_submit={() => this.submit_convert_currency_form()}
+                                                         currency={account.currency}/>;
         }
         if (this.state.show_start_pump_form) {
             start_pump_form = <StartPumpForm on_submit={() => this.submit_start_pump_form()}/>;
@@ -418,7 +442,7 @@ class WalletAccountDetails extends React.Component {
             <a className='Back'
                onClick={() => this.props.on_account_select()}>Back to accounts</a>
             <div className='Name'>{account.name}</div>
-            <div className='Address'>{account.address}</div>
+            <div className='Address'>{account.address_local_eth}</div>
             <WalletAccountStages stage={account.stage}/>
             <WalletAccountActions stage={account.stage}
                                   on_deposit_funds_click={() => this.show_deposit_funds_form()}
@@ -433,6 +457,7 @@ class WalletAccountDetails extends React.Component {
             {start_dump_form}
             {withdraw_funds_form}
             {distribute_funds_form}
+            <WalletBalances/>
             <WalletAccountTransactions/>
         </div>;
     }
@@ -465,11 +490,15 @@ class WalletAccountDetails extends React.Component {
         this.setState({ ...this.default_state, show_deposit_funds_form: false });
         const account = this.props.account;
         account.stage = 'funds_deposited';
+        account.address_exchange_eth = address;
         this.props.save_account(account);
     }
 
     submit_convert_currency_form() {
         this.setState({ ...this.default_state, show_convert_currency_form: false });
+        const account = this.props.account;
+        account.currency = account.currency === 'ETH' ? 'BTC' : 'ETH';
+        this.props.save_account(account);
     }
 
     submit_start_pump_form() {
