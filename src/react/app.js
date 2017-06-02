@@ -69,9 +69,20 @@ class WalletSetup extends React.Component {
                          onSubmit={event => this.on_submit(event)}>
                 <label className='Row'>
                     <input className='Input'
+                           type='text'
+                           placeholder='Poloniex API Key'
+                           onChange={event => this.on_api_key_change(event)}/>
+                </label>
+                <label className='Row'>
+                    <input className='Input'
+                           type='text'
+                           placeholder='Poloniex API Secret'
+                           onChange={event => this.on_api_secret_change(event)}/>
+                </label>
+                <label className='Row'>
+                    <input className='Input'
                            type='password'
                            placeholder='Password'
-                           autoFocus
                            onChange={event => this.on_password_change(event)}/>
                 </label>
                 <label className='Row'>
@@ -84,6 +95,14 @@ class WalletSetup extends React.Component {
                 {row_button}
             </form>
         </div>;
+    }
+
+    on_api_key_change(event) {
+        this.setState({poloniex_api_key: event.target.value});
+    }
+
+    on_api_secret_change(event) {
+        this.setState({poloniex_api_secret: event.target.value});
     }
 
     generate_seed() {
@@ -106,6 +125,8 @@ class WalletSetup extends React.Component {
             if (err) throw err;
             const keystore = new lightwallet.keystore(this.state.seed, derived_key);
             this.props.on_setup({
+                poloniex_api_key: this.state.poloniex_api_key,
+                poloniex_api_secret: this.state.poloniex_api_secret,
                 password: this.state.password,
                 seed: this.state.seed,
                 keystore:keystore.serialize(),
