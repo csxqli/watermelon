@@ -419,6 +419,9 @@ class WalletAccountTransactions extends React.Component {
         if (this.state.transactions) {
             rows = this.state.transactions.map(transaction => this.render_transaction(transaction));
         }
+        else {
+            rows = <div className='Loading'>Loading..</div>
+        }
         return <div className='WalletAccountTransactions Padding2Top'>
             <div className='Title'>Transaction log</div>
             {rows}
