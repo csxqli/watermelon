@@ -4,9 +4,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classnames from 'classnames';
 import lightwallet from 'eth-lightwallet';
+import ethereum_units from 'ethereum-units';
 
 // ------ Globals ------
 
+const etherscan_api_token = '14CDYEPHA94J5RWFJMJ1UMRMC94BNRG5GB';
 const path_setup = path.join(__dirname, '../data/setup.json');
 
 const stages = [ 'accepting_investors',
@@ -406,8 +408,58 @@ class WalletBalances extends React.Component {
 }
 
 class WalletAccountTransactions extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+        this.load_transactions();
+    }
+
     render() {
-        return <div className='WalletAccountTransactions'></div>;
+        let rows = null;
+        if (this.state.transactions) {
+            rows = this.state.transactions.map(transaction => this.render_transaction(transaction));
+        }
+        return <div className='WalletAccountTransactions Padding2Top'>
+            <div className='Title'>Transaction log</div>
+            {rows}
+        </div>;
+    }
+
+    load_transactions() {
+        const address = this.props.address;
+        fetch(`http://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${etherscan_api_token}`)
+            .then(res => res.json())
+            .then(res => res.result)
+            .then(transactions => transactions.reverse())
+            .then(transactions => this.setState({transactions: transactions}));
+    }
+
+    render_transaction(transaction) {
+        const is_incoming = transaction.to === this.props.address;
+        return is_incoming ? this.render_incoming_transaction(transaction) : this.render_outgoing_transaction(transaction);
+    }
+
+    render_incoming_transaction(transaction) {
+        return <div className='Transaction Incoming' key={`transaction_incoming_${transaction.timeStamp}`}>
+            Received <span className='Value'>{this.format_value(transaction.value)}</span> from <span className='Address'>{transaction.from}</span>
+            <span className='Timespamp'>{this.format_timestamp(transaction.timeStamp)}</span>
+        </div>;
+    }
+
+    render_outgoing_transaction(transaction) {
+        return <div className='Transaction Outgoing' key={`transaction_outgoing_${transaction.timeStamp}`}>
+            <span className='Timespamp'>{this.format_timestamp(transaction.timeStamp)}</span>
+            Sent <span className='Value'>{this.format_value(transaction.value)}</span> to <span className='Address'>{transaction.to}</span>
+        </div>;
+    }
+
+    format_value(value) {
+        return ethereum_units.convert(value, 'wei', 'ether').toString() + ' ether';
+    }
+
+    format_timestamp(timestamp) {
+        const date = new Date(Number(timestamp) * 1000);
+        return date.toGMTString()
     }
 }
 
@@ -473,7 +525,7 @@ class WalletAccountDetails extends React.Component {
             {start_dump_form}
             {withdraw_funds_form}
             {distribute_funds_form}
-            <WalletAccountTransactions/>
+            <WalletAccountTransactions address={'0x14c48295274d66dff94fc815006dc9108d8a3b8a'}/>
         </div>;
     }
 

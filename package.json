@@ -26,6 +26,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "eth-lightwallet": "^2.5.4",
+    "ethereum-units": "^0.0.1-b",
     "react": "^15.5.4",
     "react-dom": "^15.5.4"
   }
