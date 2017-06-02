@@ -465,14 +465,14 @@ class WalletAccountTransactions extends React.Component {
     }
 
     render_incoming_transaction(transaction) {
-        return <div className='Transaction Incoming' key={`transaction_incoming_${transaction.timeStamp}`}>
+        return <div className='Transaction Incoming' key={`transaction_incoming_${transaction.hash}`}>
             Received <span className='Value'>{this.format_value(transaction.value)}</span> from <span className='Address'>{transaction.from}</span>
             <span className='Timespamp'>{this.format_timestamp(transaction.timeStamp)}</span>
         </div>;
     }
 
     render_outgoing_transaction(transaction) {
-        return <div className='Transaction Outgoing' key={`transaction_outgoing_${transaction.timeStamp}`}>
+        return <div className='Transaction Outgoing' key={`transaction_outgoing_${transaction.hash}`}>
             <span className='Timespamp'>{this.format_timestamp(transaction.timeStamp)}</span>
             Sent <span className='Value'>{this.format_value(transaction.value)}</span> to <span className='Address'>{transaction.to}</span>
         </div>;
