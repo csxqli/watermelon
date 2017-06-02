@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import classnames from 'classnames';
+import Poloniex from 'poloniex.js';
+import classnames from 'classnames'
 import lightwallet from 'eth-lightwallet';
 import ethereum_units from 'ethereum-units';
 
@@ -10,13 +11,13 @@ import ethereum_units from 'ethereum-units';
 
 const etherscan_api_token = '14CDYEPHA94J5RWFJMJ1UMRMC94BNRG5GB';
 const path_setup = path.join(__dirname, '../data/setup.json');
-
 const stages = [ 'accepting_investors',
                  'funds_deposited',
                  'pump_started',
                  'pump_complete',
                  'funds_withdrawn',
                  'funds_distributed' ];
+let poloniex;
 
 // ------ Tabs ------
 
@@ -702,6 +703,13 @@ class Wallet extends React.Component {
 // ------ MarketResearch ------
 
 class MarketResearch extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+        poloniex.returnCurrencies((err, result) => this.setState({ currencies: result }));
+        poloniex.return24hVolume((err, result) => this.setState({ volumes: result }));
+        poloniex.returnOrderBook('BTC', 'ETH', (err, result) => console.log(result));
+    }
     render() {
         return <div className='MarketResearch Padding3'>
             <h1>MarketResearch</h1>
@@ -712,12 +720,16 @@ class MarketResearch extends React.Component {
 // ------ App ------
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+        const setup = fs.readFileSync(path_setup);
+        poloniex = new Poloniex(setup.poloniex_api_key, setup.poloniex_api_secret);
+    }
+
     render() {
         return <div className='App'>
-            <Tabs children={[
-                { label: 'Wallet', content: <Wallet/> },
-                { label: 'MarketResearch', content: <MarketResearch/> },
-            ]}/>
+            <Tabs children={[{ label: 'Wallet', content: <Wallet/> },
+                             { label: 'MarketResearch', content: <MarketResearch/> }, ]}/>
         </div>;
     }
 }
