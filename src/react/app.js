@@ -385,21 +385,21 @@ class WalletBalances extends React.Component {
             balance_exchange_eth = <div className='Balance'>
             <div className='Amount'>0.31</div>
             <div className='Unit'>Ether</div>
-            <div className='Label'>Exchange balance</div>
+            <div className='Label'>Exchange</div>
         </div>;
         }
         if (this.props.address_exchange_btc) {
             balance_exchange_btc = <div className='Balance'>
             <div className='Amount'>17.1</div>
             <div className='Unit'>Bitcoin</div>
-            <div className='Label'>Exchange balance</div>
+            <div className='Label'>Exchange</div>
         </div>;
         }
         return <div className='WalletBalances Padding2Top'>
             <div className='Balance Local'>
                 <div className='Amount'>150.54</div>
                 <div className='Unit'>Ether</div>
-                <div className='Label'>Local balance</div>
+                <div className='Label'>Wallet</div>
             </div>
             {balance_exchange_eth}
             {balance_exchange_btc}
