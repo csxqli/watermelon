@@ -6,6 +6,7 @@ import Poloniex from 'poloniex.js';
 import classnames from 'classnames'
 import lightwallet from 'eth-lightwallet';
 import ethereum_units from 'ethereum-units';
+import {AreaChart, Area, Legend, YAxis, Tooltip} from 'recharts';
 
 // ------ Globals ------
 
@@ -736,10 +737,52 @@ class TradingPairList extends React.Component {
     }
 
     render_row(pair) {
-        return <tr key={`trading_pair_row_${pair.pair}`}>
+        let classNames = classnames({Selected: this.props.selected_pair && this.props.selected_pair.pair === pair.pair});
+        return <tr key={`trading_pair_row_${pair.pair}`} className={classNames}>
             <td className='Cell Pair'><a className='Link' onClick={() => this.props.on_select_pair(pair)}>{pair.pair}</a></td>
             <td className='Cell Volume'>{pair.volume.toFixed(8)} {pair.base}</td>
         </tr>
+    }
+}
+
+class TradingPairDetails extends React.Component {
+    render() {
+        const order_book = this.props.order_book;
+        const asks = order_book.asks.map(ask => Number(ask[0]));
+        const bids = order_book.bids.map(bid => Number(bid[0]));
+        return <div className='TradingPairDetails'>
+            <div className='OrderBookChart'>
+                <div className='Title'>Order Book {this.props.pair.pair}</div>
+                <span className='ChartHolder'>
+                    <AreaChart width={240} height={300} data={bids.map(bid => ({ bid }))}>
+                        <YAxis hide orientation='left' type='number' domain={['dataMin', 'dataMax']}/>
+                        <Area type='linear'
+                              dataKey='bid'
+                              stroke='#333333'
+                              fill='#333333'
+                              fillOpacity={0.15}
+                              dot={false}
+                              isAnimationActive={false}/>
+                        <Legend/>
+                        <Tooltip/>
+                    </AreaChart>
+                </span>
+                <span className='ChartHolder'>
+                    <AreaChart width={240} height={300} data={asks.map(ask => ({ ask }))}>
+                        <YAxis hide orientation='right' type='number' domain={['dataMin', 'dataMax']}/>
+                        <Area type='linear'
+                              dataKey='ask'
+                              stroke='#aa0000'
+                              fill='#aa0000'
+                              fillOpacity={0.15}
+                              dot={false}
+                              isAnimationActive={false}/>
+                        <Legend/>
+                        <Tooltip/>
+                    </AreaChart>
+                </span>
+            </div>
+        </div>;
     }
 }
 
@@ -776,11 +819,18 @@ class MarketResearch extends React.Component {
         if (this.state.filter_max) {
             filtered = filtered.filter(pair => pair.volume <= this.state.filter_max);
         }
+        let trading_pair_details = null;
+        if (this.state.pair && this.state.order_book) {
+            trading_pair_details = <TradingPairDetails order_book={this.state.order_book}
+                                                       pair={this.state.pair}/>
+        }
         return <div className='MarketResearch Padding3'>
             <TradingPairFilter on_base_change={base => this.setState({filter_base: base})}
                                on_min_change={min => this.setState({filter_min: min})}
                                on_max_change={max => this.setState({filter_max: max})}/>
+            {trading_pair_details}
             <TradingPairList pairs={filtered}
+                             selected_pair={this.state.pair}
                              on_select_pair={pair => this.get_order_book(pair)}/>
         </div>;
     }
@@ -790,7 +840,7 @@ class MarketResearch extends React.Component {
         const currency_1 = split[0];
         const currency_2 = split[1];
         poloniex.returnOrderBook(currency_1, currency_2, (err, result) => {
-            console.log(err, result);
+            this.setState({order_book: result, pair: pair});
         });
     }
 }

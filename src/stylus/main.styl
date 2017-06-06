@@ -194,6 +194,11 @@ code
         text-align right
         background #eee
 
+.TradingPairFilter
+    .Input
+        height 3.2rem
+        margin-right 1rem
+
 .TradingPairList
     width 24rem
     .CellHeader
@@ -211,8 +216,17 @@ code
     tr
         &:nth-child(even)
             background #eee
+    .Selected
+        .Cell
+            background #ccc
+            font-weight bold
 
-.TradingPairFilter
-    .Input
-        height 3.2rem
-        margin-right 1rem
+.TradingPairDetails
+    float right
+    margin-top 1.5rem
+    width 30rem
+    text-align center
+    .Title
+        font-weight bold
+    .ChartHolder
+        display inline-block

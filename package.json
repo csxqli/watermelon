@@ -29,6 +29,7 @@
     "ethereum-units": "^0.0.1-b",
     "poloniex.js": "^0.0.7",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "recharts": "^1.0.0-alpha.0"
   }
 }
