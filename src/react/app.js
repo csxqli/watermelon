@@ -706,24 +706,14 @@ class TradingPairFilter extends React.Component {
     render() {
         return <div className='TradingPairFilter Form'>
             <div className='Row'>
-                <label className='CheckboxLabel'>
-                    <input className='Input' name='filter_base' type='radio' defaultChecked onClick={() => this.props.on_base_change('BTC')}/>
-                    BTC
-                </label>
-                <label className='CheckboxLabel'>
-                    <input className='Input' name='filter_base' type='radio' onClick={() => this.props.on_base_change('ETH')}/>
-                    ETH
-                </label>
-                <label className='CheckboxLabel'>
-                    <input className='Input' name='filter_base' type='radio' onClick={() => this.props.on_base_change('XMR')}/>
-                    XMR
-                </label>
-                <label className='CheckboxLabel'>
-                    <input className='Input' name='filter_base' type='radio' onClick={() => this.props.on_base_change('USDT')}/>
-                    USDT
-                </label>
-            </div>
-            <div className='Row'>
+                <select className='Input'
+                        defaultValue='BTC'
+                        onChange={event => this.props.on_base_change(event.target.value)}>
+                    <option value='BTC'>BTC</option>
+                    <option value='ETH'>ETH</option>
+                    <option value='XMR'>XMR</option>
+                    <option value='USDT'>USDT</option>
+                </select>
                 <input className='Input' type='number' placeholder='Minimum volume' onChange={event => this.props.on_min_change(event.target.value)}/>
                 <input className='Input' type='number' placeholder='Maximum volume' onChange={event => this.props.on_max_change(event.target.value)}/>
             </div>
@@ -737,8 +727,8 @@ class TradingPairList extends React.Component {
         return <table className='TradingPairList'>
             <thead>
                 <tr>
-                    <th>Pair</th>
-                    <th>Volume</th>
+                    <th className='CellHeader'>Pair</th>
+                    <th className='CellHeader'>Volume</th>
                 </tr>
             </thead>
             <tbody>{rows}</tbody>
@@ -747,8 +737,8 @@ class TradingPairList extends React.Component {
 
     render_row(pair) {
         return <tr key={`trading_pair_row_${pair.pair}`}>
-            <td>{pair.pair}</td>
-            <td>{pair.volume} {pair.base}</td>
+            <td className='Cell Pair'><a className='Link' onClick={() => this.props.on_select_pair(pair)}>{pair.pair}</a></td>
+            <td className='Cell Volume'>{pair.volume.toFixed(8)} {pair.base}</td>
         </tr>
     }
 }
@@ -775,7 +765,7 @@ class MarketResearch extends React.Component {
                 base: base
             };
         });
-        const sorted = pairs.sort((a, b) => a.volume - b.volume);
+        const sorted = pairs.sort((a, b) => b.volume - a.volume);
         let filtered = sorted;
         if (this.state.filter_base) {
             filtered = filtered.filter(pair => pair.base === this.state.filter_base);
@@ -790,8 +780,18 @@ class MarketResearch extends React.Component {
             <TradingPairFilter on_base_change={base => this.setState({filter_base: base})}
                                on_min_change={min => this.setState({filter_min: min})}
                                on_max_change={max => this.setState({filter_max: max})}/>
-            <TradingPairList pairs={filtered}/>
+            <TradingPairList pairs={filtered}
+                             on_select_pair={pair => this.get_order_book(pair)}/>
         </div>;
+    }
+
+    get_order_book(pair) {
+        const split = pair.pair.split('_');
+        const currency_1 = split[0];
+        const currency_2 = split[1];
+        poloniex.returnOrderBook(currency_1, currency_2, (err, result) => {
+            console.log(err, result);
+        });
     }
 }
 

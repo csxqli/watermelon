@@ -78,12 +78,6 @@ code
     font-size 1.8rem
     text-shadow #000 0 0 0.2rem
 
-.CheckboxLabel
-    font-size 1rem
-    margin-right 0.75rem
-    .Input
-        margin-right 0.5rem
-
 .WalletAccountsList
     .Item
         display: inline-block
@@ -199,3 +193,26 @@ code
         padding 0.3rem 0.3rem 0.3rem 0
         text-align right
         background #eee
+
+.TradingPairList
+    width 24rem
+    .CellHeader
+        font-weight bold
+    .Cell
+        padding 0.5rem
+        &:hover
+            .Link
+                text-decoration underline
+                color #c33
+                cursor pointer
+    .Volume
+        text-align right
+        font-family PT Sans Mono, monospace
+    tr
+        &:nth-child(even)
+            background #eee
+
+.TradingPairFilter
+    .Input
+        height 3.2rem
+        margin-right 1rem
