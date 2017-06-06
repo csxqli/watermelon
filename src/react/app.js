@@ -17,7 +17,7 @@ const stages = [ 'accepting_investors',
                  'pump_complete',
                  'funds_withdrawn',
                  'funds_distributed' ];
-let poloniex;
+let poloniex = null;
 
 // ------ Tabs ------
 
@@ -702,28 +702,112 @@ class Wallet extends React.Component {
 
 // ------ MarketResearch ------
 
+class TradingPairFilter extends React.Component {
+    render() {
+        return <div className='TradingPairFilter Form'>
+            <div className='Row'>
+                <label className='CheckboxLabel'>
+                    <input className='Input' name='filter_base' type='radio' defaultChecked onClick={() => this.props.on_base_change('BTC')}/>
+                    BTC
+                </label>
+                <label className='CheckboxLabel'>
+                    <input className='Input' name='filter_base' type='radio' onClick={() => this.props.on_base_change('ETH')}/>
+                    ETH
+                </label>
+                <label className='CheckboxLabel'>
+                    <input className='Input' name='filter_base' type='radio' onClick={() => this.props.on_base_change('XMR')}/>
+                    XMR
+                </label>
+                <label className='CheckboxLabel'>
+                    <input className='Input' name='filter_base' type='radio' onClick={() => this.props.on_base_change('USDT')}/>
+                    USDT
+                </label>
+            </div>
+            <div className='Row'>
+                <input className='Input' type='number' placeholder='Minimum volume' onChange={event => this.props.on_min_change(event.target.value)}/>
+                <input className='Input' type='number' placeholder='Maximum volume' onChange={event => this.props.on_max_change(event.target.value)}/>
+            </div>
+        </div>;
+    }
+}
+
+class TradingPairList extends React.Component {
+    render() {
+        const rows = this.props.pairs.map(pair => this.render_row(pair))
+        return <table className='TradingPairList'>
+            <thead>
+                <tr>
+                    <th>Pair</th>
+                    <th>Volume</th>
+                </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+        </table>;
+    }
+
+    render_row(pair) {
+        return <tr key={`trading_pair_row_${pair.pair}`}>
+            <td>{pair.pair}</td>
+            <td>{pair.volume} {pair.base}</td>
+        </tr>
+    }
+}
+
 class MarketResearch extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
-        poloniex.returnCurrencies((err, result) => this.setState({ currencies: result }));
-        poloniex.return24hVolume((err, result) => this.setState({ volumes: result }));
-        poloniex.returnOrderBook('BTC', 'ETH', (err, result) => console.log(result));
+        this.state = { filter_base: 'BTC' };
+        initialize_poloniex();
+        if (poloniex) {
+            poloniex.returnCurrencies((err, result) => this.setState({ currencies: result }));
+            poloniex.return24hVolume((err, result) => this.setState({ volumes: result }));
+        }
     }
     render() {
+        if (!this.state.volumes) return null;
+        const pair_keys = Object.keys(this.state.volumes).filter(key => key.indexOf('_') > -1);
+        const pairs = pair_keys.map(key => {
+            const split = key.split('_');
+            const base = split[0];
+            return {
+                volume: Number(this.state.volumes[key][base]),
+                pair: key,
+                base: base
+            };
+        });
+        const sorted = pairs.sort((a, b) => a.volume - b.volume);
+        let filtered = sorted;
+        if (this.state.filter_base) {
+            filtered = filtered.filter(pair => pair.base === this.state.filter_base);
+        }
+        if (this.state.filter_min) {
+            filtered = filtered.filter(pair => pair.volume >= this.state.filter_min);
+        }
+        if (this.state.filter_max) {
+            filtered = filtered.filter(pair => pair.volume <= this.state.filter_max);
+        }
         return <div className='MarketResearch Padding3'>
-            <h1>MarketResearch</h1>
+            <TradingPairFilter on_base_change={base => this.setState({filter_base: base})}
+                               on_min_change={min => this.setState({filter_min: min})}
+                               on_max_change={max => this.setState({filter_max: max})}/>
+            <TradingPairList pairs={filtered}/>
         </div>;
     }
 }
 
 // ------ App ------
 
+const initialize_poloniex = () => {
+    if (!poloniex && fs.existsSync(path_setup)) {
+        const setup = fs.readFileSync(path_setup);
+        poloniex = new Poloniex(setup.poloniex_api_key, setup.poloniex_api_secret);
+    }
+};
+
 class App extends React.Component {
     constructor(props) {
         super(props);
-        const setup = fs.readFileSync(path_setup);
-        poloniex = new Poloniex(setup.poloniex_api_key, setup.poloniex_api_secret);
+        initialize_poloniex();
     }
 
     render() {
