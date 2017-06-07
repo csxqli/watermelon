@@ -1,6 +1,6 @@
 {
   "name": "watermelon",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Watermelon has many seeds",
   "main": "src/electron/main.js",
   "repository": "git@github.com:Srirangan/watermelon.git",
