@@ -440,7 +440,14 @@ class WalletAccountTransactions extends React.Component {
     render() {
         let rows = null;
         if (this.state.transactions) {
-            rows = this.state.transactions.map(transaction => this.render_transaction(transaction));
+            if (this.state.transactions.length === 0) {
+                const link_etherscan = <a href={`https://etherscan.io/address/${this.props.address}`}
+                                          target='_blank'>Etherscan</a>;
+                rows = <div className='Loading'>Zero transactions, check on {link_etherscan}</div>;
+            }
+            else {
+                rows = this.state.transactions.map(transaction => this.render_transaction(transaction));
+            }
         }
         else {
             rows = <div className='Loading'>Loading..</div>
@@ -551,7 +558,8 @@ class WalletAccountDetails extends React.Component {
             {start_dump_form}
             {withdraw_funds_form}
             {distribute_funds_form}
-            <WalletAccountTransactions address={'0x14c48295274d66dff94fc815006dc9108d8a3b8a'}/>
+            {/*<WalletAccountTransactions address={'0x14c48295274d66dff94fc815006dc9108d8a3b8a'}/>*/}
+            <WalletAccountTransactions address={account.address_local_eth}/>
         </div>;
     }
 
