@@ -716,17 +716,33 @@ class TradingPairFilter extends React.Component {
         return <div className='TradingPairFilter Form'>
             <div className='Row'>
                 <select className='Input'
-                        defaultValue='BTC'
-                        onChange={event => this.props.on_base_change(event.target.value)}>
+                        defaultValue={this.props.base}
+                        onChange={event => this.on_base_change(event)}>
                     <option value='BTC'>BTC</option>
                     <option value='ETH'>ETH</option>
                     <option value='XMR'>XMR</option>
                     <option value='USDT'>USDT</option>
                 </select>
-                <input className='Input' type='number' placeholder='Minimum volume' onChange={event => this.props.on_min_change(event.target.value)}/>
-                <input className='Input' type='number' placeholder='Maximum volume' onChange={event => this.props.on_max_change(event.target.value)}/>
+                <input className='Input'
+                       type='number'
+                       placeholder='Minimum volume'
+                       defaultValue={this.props.min || null}
+                        ref={ref => this.filter_min = ref}
+                       onChange={event => this.props.on_min_change(event.target.value)}/>
+                <input className='Input'
+                       type='number'
+                       placeholder='Maximum volume'
+                       defaultValue={this.props.max || null}
+                        ref={ref => this.filter_max = ref}
+                       onChange={event => this.props.on_max_change(event.target.value)}/>
             </div>
         </div>;
+    }
+
+    on_base_change(event) {
+        this.props.on_base_change(event.target.value);
+        this.filter_min.value ='';
+        this.filter_max.value = '';
     }
 }
 
@@ -797,7 +813,7 @@ class TradingPairDetails extends React.Component {
 class MarketResearch extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { filter_base: 'BTC' };
+        this.state = { filter_base: 'BTC', filter_min: null, filter_max: null };
         initialize_poloniex();
         if (poloniex) {
             poloniex.returnCurrencies((err, result) => this.setState({ currencies: result }));
@@ -832,10 +848,14 @@ class MarketResearch extends React.Component {
             trading_pair_details = <TradingPairDetails order_book={this.state.order_book}
                                                        pair={this.state.pair}/>
         }
+        console.log(this.state);
         return <div className='MarketResearch Padding3'>
-            <TradingPairFilter on_base_change={base => this.setState({filter_base: base})}
+            <TradingPairFilter on_base_change={base => this.on_filter_base_change(base)}
                                on_min_change={min => this.setState({filter_min: min})}
-                               on_max_change={max => this.setState({filter_max: max})}/>
+                               on_max_change={max => this.setState({filter_max: max})}
+                               base={this.state.filter_base}
+                               min={this.state.filter_min}
+                               max={this.state.filter_max}/>
             {trading_pair_details}
             <TradingPairList pairs={filtered}
                              selected_pair={this.state.pair}
@@ -850,6 +870,10 @@ class MarketResearch extends React.Component {
         poloniex.returnOrderBook(currency_1, currency_2, (err, result) => {
             this.setState({order_book: result, pair: pair});
         });
+    }
+
+    on_filter_base_change(base) {
+        this.setState({filter_base: base, filter_min: null, filter_max: null})
     }
 }
 
