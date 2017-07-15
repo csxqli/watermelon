@@ -5,3 +5,7 @@ node_modules
 ## watermelon
 dist
 data/setup.json
+
+## jetbrains
+.idea
+watermelon.iml
